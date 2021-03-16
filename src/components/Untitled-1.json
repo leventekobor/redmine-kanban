@@ -1,0 +1,37 @@
+{
+            "id": 273335,
+            "project": {
+                "id": 490,
+                "name": "Oktatás"
+            },
+            "tracker": {
+                "id": 9,
+                "name": "Feladat"
+            },
+            "status": {
+                "id": 2,
+                "name": "Hozzárendelve"
+            },
+            "priority": {
+                "id": 4,
+                "name": "Normal"
+            },
+            "author": {
+                "id": 8,
+                "name": "Tóth (Sanyi) László"
+            },
+            "assigned_to": {
+                "id": 2644,
+                "name": "Kóbor Levente"
+            },
+            "subject": "Bi felvételi feladat kitalálása",
+            "description": "",
+            "start_date": "2020-11-30",
+            "due_date": null,
+            "done_ratio": 0,
+            "is_private": false,
+            "estimated_hours": null,
+            "created_on": "2020-11-30T12:54:50Z",
+            "updated_on": "2020-11-30T12:55:23Z",
+            "closed_on": null
+        }
