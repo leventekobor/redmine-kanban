@@ -5,6 +5,7 @@
       {{ loggedInUser }}
     </section>
   </section>
+  <Loading v-if="loading" />
 </template>
 
 <script>
