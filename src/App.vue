@@ -10,15 +10,18 @@
 <script>
 import { ref } from 'vue'
 import Login from './components/Login'
+import Loading from './components/Loading'
 
 export default {
   name: 'App',
   components: {
-    Login
+    Login,
+    Loading
   },
 
   setup() {
     let loggedInUser = ref()
+    let loading = false;
 
     function userData(user) {
       loggedInUser.value = {...user.value.user}
@@ -26,7 +29,8 @@ export default {
 
     return {
       loggedInUser,
-      userData
+      userData,
+      loading
     }
   }
 }

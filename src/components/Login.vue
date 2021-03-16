@@ -92,6 +92,7 @@ button {
   background: #005457;
   border-radius: 4px;
   color: #ffffff;
+  cursor: pointer;
 }
 
 .left {
@@ -217,9 +218,4 @@ div.omrs-input-group {
 .omrs-input-filled:not(.omrs-input-danger) > input:focus ~ svg {
 	fill: var(--omrs-color-ink-high-contrast);
 }
-
-
-
-
-
 </style>
