@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/redmine kanban/'
+  publicPath: '/https://github.com/leventekobor94/redmine-kanban//'
 }
