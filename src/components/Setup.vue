@@ -66,6 +66,7 @@ article {
 form {
   display: grid;
   grid-template-columns: fit-content(60%) 1fr;
+  grid-gap: 10px;
   text-align: start;
 }
 
@@ -97,7 +98,7 @@ input {
 button {
   margin-top: 0px;
   margin-bottom: 0px;
-  width: 17vw;
+  width: 328px;
   height: 40px;
   background: #005457;
   border-radius: 4px;
