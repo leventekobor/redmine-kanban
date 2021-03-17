@@ -1,8 +1,8 @@
 <template>
   <article>
     <form @submit.prevent="getUser">
-      <div class="left"> 
-        <img style="height: 85%;" src="../assets/rocket.svg" alt="">
+      <div class="left">
+        <img src="../assets/rocket.svg" alt="">
       </div>
       <div class="right">
         <h1>Redmine kanban board</h1>
@@ -61,42 +61,43 @@ article {
   display: grid;
   max-width: 70vw;
   max-height: 70vh;
-
 }
 
 form {
   display: grid;
-  grid-template-areas: "left left right";
+  grid-template-columns: fit-content(50%) 1fr;
   text-align: start;
 }
 
+img {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+
 h1 {
-  margin-bottom: 50px;
+  margin-bottom: 0px;
   font-size: 30px;
 }
 
-p {
-  margin-bottom: 30px;
-}
-
 a {
-  margin-bottom: 50px;
+  margin-bottom: 0px;
 }
 
 h4 {
-  margin-bottom: 30px;
+  margin-bottom: 0px;
   font-size: 22px;
 }
 
 input {
-  margin-top: 5px;
-  margin-bottom: 10px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 button {
-  margin-top: 5px;
-  margin-bottom: 10px;
-  width: 326px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  width: 17vw;
   height: 40px;
   background: #005457;
   border-radius: 4px;
@@ -104,15 +105,10 @@ button {
   cursor: pointer;
 }
 
-.left {
-  grid-area: left;
-}
-
 .right {
-  grid-area: right;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: flex-start;
 }
 
