@@ -1,22 +1,24 @@
 <template>
-  <form @submit.prevent="getUser">
-    <div class="left"> 
-      <img src="../assets/rocket.svg" alt="">
-    </div>
-    <div class="right">
-      <h1>Redmine kanban board</h1>
-      <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
-      <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
-      <h4>Bejelentkezés</h4>
-      <div class="omrs-input-group">
-        <label class="omrs-input-underlined">
-          <input required v-model="apiKey" id="api-token" name="api-token" type="text">
-          <span class="omrs-input-label">API kulcs</span>
-        </label>
+  <article>
+    <form @submit.prevent="getUser">
+      <div class="left"> 
+        <img style="height: 85%;" src="../assets/rocket.svg" alt="">
       </div>
-      <button>BEJELENTKEZÉS</button>
-    </div>
-  </form>
+      <div class="right">
+        <h1>Redmine kanban board</h1>
+        <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
+        <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
+        <h4>Bejelentkezés</h4>
+        <div class="omrs-input-group">
+          <label class="omrs-input-underlined">
+            <input required v-model="apiKey" id="api-token" name="api-token" type="text">
+            <span class="omrs-input-label">API kulcs</span>
+          </label>
+        </div>
+        <button>BEJELENTKEZÉS</button>
+      </div>
+    </form>
+  </article>
   <div v-bind:class="{ active: isActive }" class="toast" id="errorToast">Sikertelen bejelentkezés</div>
 </template>
 
@@ -55,6 +57,13 @@ export default {
 </script>
 
 <style>
+article {
+  display: grid;
+  max-width: 70vw;
+  max-height: 70vh;
+
+}
+
 form {
   display: grid;
   grid-template-areas: "left left right";
@@ -101,7 +110,6 @@ button {
 
 .right {
   grid-area: right;
-  width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;

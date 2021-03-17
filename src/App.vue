@@ -1,6 +1,6 @@
 <template>
   <section class="app-container">
-    <Login v-if="!loggedInUser" @userLoad="userData" />
+    <Setup v-if="!loggedInUser" @userLoad="userData" />
     <section v-else>
       {{ loggedInUser }}
     </section>
@@ -10,13 +10,13 @@
 
 <script>
 import { ref } from 'vue'
-import Login from './components/Login'
+import Setup from './components/Setup'
 import Loading from './components/Loading'
 
 export default {
   name: 'App',
   components: {
-    Login,
+    Setup,
     Loading
   },
 
@@ -52,7 +52,7 @@ export default {
 }
 
 body {
-  background: linear-gradient(116.82deg, #36B342 0%, rgba(0, 0, 0, 0.37) 100%);
+  background: linear-gradient(100deg, #36B342 0%, rgba(0, 0, 0, 0.37) 100%);
 }
 
 .app-container {
@@ -60,6 +60,6 @@ body {
   background: #FFFFFF;
   border-radius: 10px;
   padding: 20px;
-  margin: 10rem;
+  margin: 5rem;
 }
 </style>
