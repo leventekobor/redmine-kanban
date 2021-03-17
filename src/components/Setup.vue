@@ -65,7 +65,7 @@ article {
 
 form {
   display: grid;
-  grid-template-columns: fit-content(50%) 1fr;
+  grid-template-columns: fit-content(60%) 1fr;
   text-align: start;
 }
 
