@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="info">
+    <div class="info" v-if="user.firstname">
       <span class="small-text">Név:</span>
       <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <HeaderComponent/>
+  <HeaderComponent v-if="user.firstname"/>
   <div>
     <router-view/>
   </div>
@@ -7,12 +7,23 @@
 
 <script>
 import HeaderComponent from '@/components/HeaderComponent'
+import { computed } from 'vue'
+import { useStore } from "vuex"
 
 export default {
   name: 'App',
   components: {
     HeaderComponent
-  } 
+  },
+  setup() {
+    const store = useStore();
+    const user = computed(() => store.state.user);
+
+    console.log(user)
+    return {
+      user
+    }
+  }
 }
 </script>
 

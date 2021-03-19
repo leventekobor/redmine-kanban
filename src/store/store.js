@@ -8,7 +8,6 @@ const store = createStore({
    },
    mutations: {
       addUser (state, payload) {
-         console.log("mutating")
          state.user = {...payload.payload}
       }
    }
