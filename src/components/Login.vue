@@ -1,31 +1,61 @@
 <template>
-  <Login v-if="stepCount === 0" @increaseStepCount="newStepCount"/>
-  <ProjectPick v-if="stepCount === 1"/>
+  <article>
+    <form @submit.prevent="getUser">
+      <div class="left">
+        <img src="../assets/rocket.svg" alt="">
+      </div>
+      <div class="right">
+        <h1>Redmine kanban board</h1>
+        <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
+        <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
+        <h4>Bejelentkezés</h4>
+        <div class="omrs-input-group">
+          <label class="omrs-input-underlined">
+            <input required v-model="apiKey" id="api-token" name="api-token" type="text">
+            <span class="omrs-input-label">API kulcs</span>
+          </label>
+        </div>
+        <button>BEJELENTKEZÉS</button>
+      </div>
+    </form>
+  </article>
+  <div v-bind:class="{ active: isActive }" class="toast" id="errorToast">Sikertelen bejelentkezés</div>
 </template>
 
 <script>
 import { ref } from 'vue'
-import Login from '@/components/Login'
-import ProjectPick from '@/components/ProjectPick'
-
+import RedmineService from '@/services/RedmineService.js'
+import store from '@/store/store'
 
 export default {
-  name: "Setup",
-  components: {
-    Login,
-    ProjectPick
-  },
-  setup() {
-    let stepCount = ref(0)
+  name: "Login",
+  emits: ["increaseStepCount"],
+  setup(_,{ emit }) {
+    const apiKey = ref('')
+    let user = ref('')
+    let isActive = ref(false)
 
-    function newStepCount(count) {
-      stepCount.value = count
+    async function getUser() {
+      try {
+        const response = (await RedmineService.getUser(apiKey.value))
+        user.value = response.data
+        store.commit({
+          type: 'addUser',
+          payload: response.data.user
+        })
+        emit('increaseStepCount', 1);
+      } catch (error) {
+        isActive.value = true
+        setTimeout(() => isActive.value = false, 2000)
+        apiKey.value = ""
+      }
     }
 
-
     return {
-      stepCount,
-      newStepCount
+      apiKey,
+      user,
+      isActive,
+      getUser
     }
   }
 }

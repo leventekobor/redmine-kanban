@@ -10,8 +10,15 @@ export default {
     })
   },
   getIssues(apiKey, issueId) {
-    //console.log(apiKey, issueId)
     return Api().get(`issues.json?issue_id=${issueId}`, {
+      headers: {
+        'X-Redmine-API-Key': apiKey,
+        "Target-URL": "https://redmine.tigra.hu/"
+      }
+    })
+  },
+  getProjects(apiKey, offset) {
+    return Api().get(`projects.json?limit=100&offset=${offset}`, {
       headers: {
         'X-Redmine-API-Key': apiKey,
         "Target-URL": "https://redmine.tigra.hu/"

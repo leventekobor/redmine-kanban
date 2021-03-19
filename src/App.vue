@@ -19,7 +19,6 @@ export default {
     const store = useStore();
     const user = computed(() => store.state.user);
 
-    console.log(user)
     return {
       user
     }
