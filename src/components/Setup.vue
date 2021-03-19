@@ -25,11 +25,11 @@
 <script>
 import { ref } from 'vue'
 import RedmineService from '@/services/RedmineService.js'
+import store from '@/store/store'
 
 export default {
   name: "Login",
-  emits: ["userLoad"],
-  setup(_,{ emit }) {
+  setup() {
     const apiKey = ref('')
     let user = ref('')
     let isActive = ref(false)
@@ -38,7 +38,10 @@ export default {
       try {
         const response = (await RedmineService.getUser(apiKey.value))
         user.value = response.data
-        emit('userLoad', user);
+        store.commit({
+          type: 'addUser',
+          payload: response.data.user
+        })
       } catch (error) {
         isActive.value = true
         setTimeout(() => isActive.value = false, 2000)

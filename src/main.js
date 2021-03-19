@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router'
+import store from "@/store/store"
 
 const kanbanApp = createApp(App)
 kanbanApp.use(router)
@@ -16,5 +17,7 @@ requireComponent.keys().forEach(function (fileName) {
   )
   kanbanApp.component(baseComponentName, baseComponentConfig)
 })
+
+kanbanApp.use(store)
 
 kanbanApp.mount('#app')

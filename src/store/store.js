@@ -2,7 +2,15 @@ import { createStore } from "vuex"
 
 const store = createStore({
    state:{
-      name: "Vue"
+      user: {
+
+      }
+   },
+   mutations: {
+      addUser (state, payload) {
+         console.log("mutating")
+         state.user = {...payload.payload}
+      }
    }
 })
 
