@@ -4,6 +4,10 @@
       <span class="small-text">Név:</span>
       <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
     </div>
+    <div class="info" v-if="project.name">
+      <span class="small-text">Project:</span>
+      <span class="large-text">{{ project.name }}</span>
+    </div>
   </header>
 </template>
 
@@ -16,9 +20,11 @@ export default {
   setup() {
     const store = useStore();
     const user = computed(() => store.state.user);
-    
+    const project = computed(() => store.state.project);
+
     return {
-      user
+      user,
+      project
     }
   }
 }
@@ -29,6 +35,7 @@ header {
   background-color: white;
   height: 45px;
   display: flex;
+
 }
 
 .info {
@@ -36,6 +43,7 @@ header {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  margin-right: 15px;
 }
 
 .small-text {

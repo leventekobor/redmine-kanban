@@ -1,32 +1,31 @@
 <template>
-  <article>
-    <form @submit.prevent="getUser">
+  <article class="full-screen">
+    <form @submit.prevent="addProject">
       <h1>Beállítások</h1>
       <p>Válassz projektet!</p>
       <div>
-        <input type="text" @change="serachProjects($event)">
-        <select id="selectProjectList" v-model="selectedProject">
-          <option v-for="project in projects" :key="project.id" :value="project"> {{ project.name }} </option>
-        </select>
-        <div>
-          {{ selectedProject }}
-        </div>
+        <Multiselect v-model="selectedProject" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="projectsOrdered"/>
       </div>
+      <div>{{ selectedProject }}</div>
       <button>Kiválasztás</button>
     </form>
   </article>
 </template>
 
 <script>
-import { ref, onMounted  } from 'vue'
+import { ref, onMounted } from 'vue'
 import RedmineService from '@/services/RedmineService.js'
+import Multiselect from '@vueform/multiselect'
 import { useStore } from "vuex"
-
 
 export default {
   name: "ProjectPick",
+  components: {
+    Multiselect
+  },
   setup() {
     let projects = ref()
+    let projectsOrdered = ref()
     let selectedProject = ref()
     const store = useStore()
 
@@ -40,24 +39,44 @@ export default {
           projects.value = [...projects.value, response.projects]
         }
       }
+      projectsOrdered.value = projects.value.map(({ id, name }) => ({ value:id, name:name }))
     }
 
-    function serachProjects(event) {
-      console.log(event.target.value)
-      projects.value = projects.value.filter(i => i.name.includes(event.target.value))
+  /*
+    async function getProjectQueries() {
+      let response = (await RedmineService.getProjectQueries(store.state.user.api_key, 0)).data
+      queires.value = response.queries
+      if(response.total_count > 100) {
+        const iterations = Math.ceil(response.total_count / 100)
+        for(let i = 1; i < iterations; i++) {
+          response = (await RedmineService.getProjectQueries(store.state.user.api_key, (i * 100))).data
+          queires.value = [...queires.value, response.queires]
+        }
+      }
+      queires.value = queires.value.filter(i => i.project_id === selectedProject.value)
+      console.log(queires.value)
+    }
+    */
+
+    function addProject() {
+      store.commit({
+        type: 'addProject',
+        payload: projects.value.filter(i => i.id === selectedProject.value)[0]
+      })
     }
 
     onMounted(getProjects) 
 
     return {
-      projects,
+      projectsOrdered,
       selectedProject,
-      serachProjects
+      addProject
     }
   }
 }
 </script>
 
-<style>
+<style src="@vueform/multiselect/themes/default.css">
+
 
 </style>

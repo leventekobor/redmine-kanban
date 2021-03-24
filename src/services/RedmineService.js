@@ -25,6 +25,14 @@ export default {
       }
     })
   },
+  getProjectQueries(apiKey, offset) {
+    return Api().get(`queries.json?limit=100&offset=${offset}`, {
+      headers: {
+        'X-Redmine-API-Key': apiKey,
+        "Target-URL": "https://redmine.tigra.hu/"
+      }
+    })
+  },
   getAllUpdatedIssuesIn2020(apiKey, offset) {
     return Api().get(`issues.json?updated_by=me&updated_on=><2020-01-01|2020-12-31&limit=100&status_id=*&offset=${offset}`, {
       headers: {

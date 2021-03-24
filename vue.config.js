@@ -1,4 +1,4 @@
 module.exports = {
-  publicPath: '/redmine-kanban/',
-  "runtimeCompiler": true
+  //publicPath: '/redmine-kanban/',
+  //"runtimeCompiler": true
 }

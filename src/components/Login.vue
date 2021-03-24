@@ -1,6 +1,6 @@
 <template>
   <article>
-    <form @submit.prevent="getUser">
+    <form @submit.prevent="getUser" class="form-control">
       <div class="left">
         <img src="../assets/rocket.svg" alt="">
       </div>
@@ -64,11 +64,11 @@ export default {
 <style>
 article {
   display: grid;
-  max-width: 70vw;
-  max-height: 70vh;
+  width: 70vw;
+  height: 70vh;
 }
 
-form {
+.form-control {
   display: grid;
   grid-template-columns: fit-content(60%) 1fr;
   grid-gap: 10px;
