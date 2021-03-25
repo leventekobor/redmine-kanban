@@ -1,12 +1,12 @@
 <template>
   <article class="full-screen">
-    <form @submit.prevent="addProject">
+    <form @submit.prevent="addQuerie">
       <h1>Beállítások</h1>
-      <p>Válassz projektet!</p>
+      <p>Válassz lekérdezést!</p>
       <div>
-        <Multiselect v-model="selectedProject" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="projectsOrdered"/>
+        <Multiselect v-model="selectedQuerie" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="queiresOrdered"/>
       </div>
-      <div>{{ selectedProject }}</div>
+      <div>{{ selectedQuerie }}</div>
       <button>Kiválasztás</button>
     </form>
   </article>
@@ -23,12 +23,14 @@ export default {
   components: {
     Multiselect
   },
-  setup(_, { emit }) {
-    let projects = ref()
+  setup() {
     let projectsOrdered = ref()
-    let selectedProject = ref()
+    let selectedQuerie = ref()
     const store = useStore()
+    let queires = ref()
+    let queiresOrdered = ref()
 
+/*
     async function getProjects() {
       let response = (await RedmineService.getProjects(store.state.user.api_key, 0)).data
       projects.value = response.projects
@@ -41,8 +43,9 @@ export default {
       }
       projectsOrdered.value = projects.value.map(({ id, name }) => ({ value:id, name:name }))
     }
+    */
 
-  /*
+  
     async function getProjectQueries() {
       let response = (await RedmineService.getProjectQueries(store.state.user.api_key, 0)).data
       queires.value = response.queries
@@ -53,25 +56,23 @@ export default {
           queires.value = [...queires.value, response.queires]
         }
       }
-      queires.value = queires.value.filter(i => i.project_id === selectedProject.value)
-      console.log(queires.value)
+      queires.value = queires.value.filter(i => i.project_id === store.state.project.id)
+      queiresOrdered.value = queires.value.map(({ id, name }) => ({ value:id, name:name }))
     }
-    */
+    
 
-    function addProject() {
-      store.commit({
-        type: 'addProject',
-        payload: projects.value.filter(i => i.id === selectedProject.value)[0]
-      })
-      emit('increaseStepCount', 2);
+  
+    function addQuerie() {
+      console.log(selectedQuerie.value)
     }
 
-    onMounted(getProjects) 
+    onMounted(getProjectQueries) 
 
     return {
       projectsOrdered,
-      selectedProject,
-      addProject
+      selectedQuerie,
+      queiresOrdered,
+      addQuerie
     }
   }
 }
