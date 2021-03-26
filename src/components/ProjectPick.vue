@@ -4,9 +4,8 @@
       <h1>Beállítások</h1>
       <p>Válassz projektet!</p>
       <div>
-        <Multiselect v-model="selectedProject" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="projectsOrdered"/>
+        <Multiselect required v-model="selectedProject" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="projectsOrdered"/>
       </div>
-      <div>{{ selectedProject }}</div>
       <button>Kiválasztás</button>
     </form>
   </article>

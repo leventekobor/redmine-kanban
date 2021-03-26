@@ -2,33 +2,21 @@
   <section class="app-container">
     <h1>Kanban board</h1>
     <div class="kanban">
-      <div>
-      <h3>Draggable 1</h3>
-      <draggable
-        class="list-group"
-        :list="list1"
-        group="people"
-        @change="log"
-        itemKey="name"
-      >
-        <template #item="{ element, index }">
-          <div class="list-group-item">{{ element.name }} {{ index }}</div>
-        </template>
-      </draggable>
-      </div>
-      <div>
-      <h3>Draggable 2</h3>
-      <draggable
-        class="list-group"
-        :list="list2"
-        group="people"
-        @change="log"
-        itemKey="name"
-      >
-        <template #item="{ element, index }">
-          <div class="list-group-item">{{ element.name }} {{ index }}</div>
-        </template>
-      </draggable>
+      <div v-for="(issues) in issuesByStatus" :key="issues">
+        <h2>{{ issues[0].status.name }}</h2>
+        <draggable
+          class="list-group"
+          :list="issues"
+          @change="log"
+          itemKey="subject"
+          group="issues"
+        >
+          <template #item="{ element }">
+            <div class="list-item">
+              {{ element.subject }}
+            </div>
+          </template>
+        </draggable>
       </div>
     </div>
   </section>
@@ -47,6 +35,7 @@ export default {
   },
   setup() {
     const store = useStore()
+    let issuesByStatus = ref()
     let list1 = ref([
         { name: "John", id: 1 },
         { name: "Joao", id: 2 },
@@ -65,10 +54,16 @@ export default {
     }
 
     async function getIssuesForProject(){
-      //getIssuesForProject
       let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.project.query_id, store.state.project.id)).data
-      console.log(response)
+
+      const uniqueStatusNames = response.issues.reduce((acc, curr) => {
+        return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
+      }, []);
+
+      issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
       
+      console.log(uniqueStatusNames)
+      console.log(issuesByStatus.value)
     }
 
     onMounted(getIssuesForProject)
@@ -77,7 +72,8 @@ export default {
     return {
       list1,
       list2,
-      log
+      log,
+      issuesByStatus
     }
   }
 }
@@ -86,5 +82,18 @@ export default {
 <style>
 .kanban {
   display: flex;
+}
+
+.list-item {
+  background: rgba(0, 0, 0, 0.04);
+  box-shadow: 3px 3px 7px 0px rgb(0 0 0 / 35%);
+  border-radius: 10px;
+  height: 50px;
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: move;
 }
 </style>

@@ -4,9 +4,8 @@
       <h1>Beállítások</h1>
       <p>Válassz lekérdezést!</p>
       <div>
-        <Multiselect v-model="selectedQuerie" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="queiresOrdered"/>
+        <Multiselect required v-model="selectedQuerie" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="queiresOrdered"/>
       </div>
-      <div>{{ selectedQuerie }}</div>
       <button>Kiválasztás</button>
     </form>
   </article>
