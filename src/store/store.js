@@ -15,6 +15,10 @@ const store = createStore({
       },
       addProject (state, payload){
          state.project = {...payload.payload}
+      },
+      addQuerie (state, payload) {
+         state.project.query_id = payload.payload
+         //console.log(state.project)
       }
    }
 })

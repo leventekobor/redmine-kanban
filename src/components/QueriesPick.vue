@@ -23,7 +23,7 @@ export default {
   components: {
     Multiselect
   },
-  setup() {
+  setup(_, { emit }) {
     let projectsOrdered = ref()
     let selectedQuerie = ref()
     const store = useStore()
@@ -63,7 +63,11 @@ export default {
 
   
     function addQuerie() {
-      console.log(selectedQuerie.value)
+      store.commit({
+        type: 'addQuerie',
+        payload: selectedQuerie.value
+      })
+      emit('increaseStepCount', 3);
     }
 
     onMounted(getProjectQueries) 
