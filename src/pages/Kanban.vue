@@ -67,7 +67,7 @@ export default {
     async function getIssuesForProject(){
       //getIssuesForProject
       let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.project.query_id, store.state.project.id)).data
-      console,log(response)
+      console.log(response)
       
     }
 
