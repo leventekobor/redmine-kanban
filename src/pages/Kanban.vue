@@ -1,7 +1,9 @@
 <template>
   <section class="app-container">
     <h1>Kanban board</h1>
-       <h3>Draggable 1</h3>
+    <div class="kanban">
+      <div>
+      <h3>Draggable 1</h3>
       <draggable
         class="list-group"
         :list="list1"
@@ -13,7 +15,8 @@
           <div class="list-group-item">{{ element.name }} {{ index }}</div>
         </template>
       </draggable>
-
+      </div>
+      <div>
       <h3>Draggable 2</h3>
       <draggable
         class="list-group"
@@ -26,19 +29,24 @@
           <div class="list-group-item">{{ element.name }} {{ index }}</div>
         </template>
       </draggable>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import draggable from 'vuedraggable'
+import RedmineService from '@/services/RedmineService.js'
+import { useStore } from "vuex"
 
 export default {
   name: "Kanban",
   components: {
     draggable,
   },
-  data() {
+  setup() {
+    const store = useStore()
     let list1 = ref([
         { name: "John", id: 1 },
         { name: "Joao", id: 2 },
@@ -56,6 +64,15 @@ export default {
       window.console.log(evt);
     }
 
+    async function getIssuesForProject(){
+      //getIssuesForProject
+      let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.project.query_id, store.state.project.id)).data
+      console,log(response)
+      
+    }
+
+    onMounted(getIssuesForProject)
+
 
     return {
       list1,
@@ -67,5 +84,7 @@ export default {
 </script>
 
 <style>
-
+.kanban {
+  display: flex;
+}
 </style>
