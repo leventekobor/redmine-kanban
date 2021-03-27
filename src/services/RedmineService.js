@@ -56,5 +56,18 @@ export default {
         "Target-URL": "https://redmine.tigra.hu/"
       }
     })
+  },
+  updateIssueStatus(apiKey, issueId, statusId) {
+    return Api().put(`issues/${issueId}.json`, {
+      "issue": {
+        "status_id": statusId
+      }
+    },
+    {
+      headers: {
+        'X-Redmine-API-Key': apiKey,
+        "Target-URL": "https://redmine.tigra.hu/"
+      }
+    })
   }
 }

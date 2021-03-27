@@ -8,6 +8,7 @@
           class="list-group"
           :list="issues"
           @change="log"
+          @add="add"
           itemKey="subject"
           group="issues"
         >
@@ -23,7 +24,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import draggable from 'vuedraggable'
 import RedmineService from '@/services/RedmineService.js'
 import { useStore } from "vuex"
@@ -35,7 +36,7 @@ export default {
   },
   setup() {
     const store = useStore()
-    let issuesByStatus = ref()
+    let issuesByStatus = ref([])
     let list1 = ref([
         { name: "John", id: 1 },
         { name: "Joao", id: 2 },
@@ -49,8 +50,8 @@ export default {
         { name: "Johnson", id: 7 }
       ])
 
-    function log(evt) {
-      window.console.log(evt);
+    function log() {
+      //window.console.log(evt)
     }
 
     async function getIssuesForProject(){
@@ -62,17 +63,30 @@ export default {
 
       issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
       
-      console.log(uniqueStatusNames)
+
+      let uniqueStatusNamesWithIds = response.issues.reduce((acc, curr) => {
+        return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
+      }, []);
+    
+      console.log(uniqueStatusNamesWithIds)
+      //console.log(uniqueStatusNames)
+      //console.log(issuesByStatus.value)
+    }
+
+    const add = (event) => {
+      const movedTo = event.to.parentNode.firstElementChild.textContent
+      const movedTitle = event.item.innerText
+      console.log(movedTitle + " moved to: " + movedTo)
       console.log(issuesByStatus.value)
     }
 
     onMounted(getIssuesForProject)
 
-
     return {
       list1,
       list2,
       log,
+      add,
       issuesByStatus
     }
   }
