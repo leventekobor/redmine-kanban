@@ -1,6 +1,7 @@
 <template>
   <section class="app-container">
     <h1>Kanban board</h1>
+    <loading v-if="loading"/>
     <div class="kanban">
       <div v-for="(issues) in issuesByStatus" :key="issues">
         <h2>{{ issues[0].status.name }}</h2>
@@ -15,6 +16,7 @@
           <template #item="{ element }">
             <div class="list-item">
               {{ element.subject }}
+              <div><b>Szerző:</b> {{ element.author.name }} </div>
             </div>
           </template>
         </draggable>
@@ -27,17 +29,20 @@
 import { ref, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 import RedmineService from '@/services/RedmineService.js'
+import Loading from '@/components/Loading'
 import { useStore } from "vuex"
 
 export default {
   name: "Kanban",
   components: {
     draggable,
+    Loading
   },
   setup() {
     let uniqueStatusNamesWithIds
     let originalIssues
     const store = useStore()
+    let loading = ref(false)
     let issuesByStatus = ref([])
     let list1 = ref([
         { name: "John", id: 1 },
@@ -57,6 +62,7 @@ export default {
     }
 
     async function getIssuesForProject(){
+      loading.value = true
       let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.project.query_id, store.state.project.id)).data
       originalIssues = response.issues
 
@@ -71,9 +77,7 @@ export default {
         return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
       }, []);
     
-      console.log(uniqueStatusNamesWithIds)
-      //console.log(uniqueStatusNames)
-      //console.log(issuesByStatus.value)
+      loading.value = false
     }
 
     async function add(event){
@@ -84,7 +88,6 @@ export default {
       
       let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatusId)).data
       console.log(response)
-
     }
 
     onMounted(getIssuesForProject)
@@ -114,7 +117,10 @@ export default {
   padding: 10px;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   cursor: move;
+  display: flex;
+  flex-direction: column;
 }
+
 </style>
