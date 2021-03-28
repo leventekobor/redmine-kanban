@@ -1,4 +1,5 @@
 module.exports = {
-  publicPath: '/redmine-kanban/'
-  //"runtimeCompiler": true
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/redmine-kanban/'
+    : '/'
 }
