@@ -6,7 +6,7 @@
       <div>
         <Multiselect required v-model="selectedProject" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="projectsOrdered"/>
       </div>
-      <button>Kiválasztás</button>
+      <button class="primary-button">Kiválasztás</button>
     </form>
   </article>
 </template>
@@ -41,22 +41,6 @@ export default {
       projectsOrdered.value = projects.value.map(({ id, name }) => ({ value:id, name:name }))
     }
 
-  /*
-    async function getProjectQueries() {
-      let response = (await RedmineService.getProjectQueries(store.state.user.api_key, 0)).data
-      queires.value = response.queries
-      if(response.total_count > 100) {
-        const iterations = Math.ceil(response.total_count / 100)
-        for(let i = 1; i < iterations; i++) {
-          response = (await RedmineService.getProjectQueries(store.state.user.api_key, (i * 100))).data
-          queires.value = [...queires.value, response.queires]
-        }
-      }
-      queires.value = queires.value.filter(i => i.project_id === selectedProject.value)
-      console.log(queires.value)
-    }
-    */
-
     function addProject() {
       store.commit({
         type: 'addProject',
@@ -77,6 +61,8 @@ export default {
 </script>
 
 <style src="@vueform/multiselect/themes/default.css">
-
+.primary-button {
+  margin-top: 10px;
+}
 
 </style>
