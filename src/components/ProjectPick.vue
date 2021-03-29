@@ -4,9 +4,18 @@
       <h1>Beállítások</h1>
       <p>Válassz projektet!</p>
       <div>
-        <Multiselect required v-model="selectedProject" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="projectsOrdered"/>
+        <Multiselect 
+        required 
+        v-model="selectedProject" 
+        label="name" 
+        trackBy="name" 
+        :searchable="true"  
+        :minChars="1" 
+        :options="projectsOrdered"
+        placeholder="Type to search"
+       />
       </div>
-      <button class="primary-button">Kiválasztás</button>
+      <button class="primary">Kiválasztás</button>
     </form>
   </article>
 </template>
@@ -61,8 +70,5 @@ export default {
 </script>
 
 <style src="@vueform/multiselect/themes/default.css">
-.primary-button {
-  margin-top: 10px;
-}
 
 </style>

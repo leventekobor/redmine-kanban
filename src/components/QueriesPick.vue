@@ -4,9 +4,17 @@
       <h1>Beállítások</h1>
       <p>Válassz lekérdezést!</p>
       <div>
-        <Multiselect required v-model="selectedQuerie" label="name" trackBy="name" :searchable="true"  :minChars="1" :options="queiresOrdered"/>
+        <Multiselect 
+        required 
+        v-model="selectedQuerie" 
+        label="name" 
+        trackBy="name" 
+        :searchable="true"  
+        :minChars="1" 
+        :options="queiresOrdered"
+        placeholder="Type to search"/>
       </div>
-      <button>Kiválasztás</button>
+      <button class="primary">Kiválasztás</button>
     </form>
   </article>
 </template>
@@ -28,22 +36,6 @@ export default {
     const store = useStore()
     let queires = ref()
     let queiresOrdered = ref()
-
-/*
-    async function getProjects() {
-      let response = (await RedmineService.getProjects(store.state.user.api_key, 0)).data
-      projects.value = response.projects
-      if(response.total_count > 100) {
-        const iterations = Math.ceil(response.total_count / 100)
-        for(let i = 1; i < iterations; i++) {
-          response = (await RedmineService.getProjects(store.state.user.api_key, (i * 100))).data
-          projects.value = [...projects.value, response.projects]
-        }
-      }
-      projectsOrdered.value = projects.value.map(({ id, name }) => ({ value:id, name:name }))
-    }
-    */
-
   
     async function getProjectQueries() {
       let response = (await RedmineService.getProjectQueries(store.state.user.api_key, 0)).data
@@ -58,8 +50,6 @@ export default {
       queires.value = queires.value.filter(i => i.project_id === store.state.project.id)
       queiresOrdered.value = queires.value.map(({ id, name }) => ({ value:id, name:name }))
     }
-    
-
   
     function addQuerie() {
       store.commit({
@@ -82,6 +72,5 @@ export default {
 </script>
 
 <style src="@vueform/multiselect/themes/default.css">
-
 
 </style>

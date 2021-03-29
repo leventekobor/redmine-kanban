@@ -5,17 +5,19 @@
         <img src="../assets/rocket.svg" alt="">
       </div>
       <div class="right">
-        <h1>Redmine kanban board</h1>
+        <h1 style="margin-bottom: 50px;">Redmine kanban board</h1>
         <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
         <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
-        <h4>Bejelentkezés</h4>
-        <div class="omrs-input-group">
-          <label class="omrs-input-underlined">
-            <input required v-model="apiKey" id="api-token" name="api-token" type="text">
-            <span class="omrs-input-label">API kulcs</span>
-          </label>
+        <div style="margin-top: 80px;">
+          <h4>Bejelentkezés</h4>
+          <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+              <input required v-model="apiKey" id="api-token" name="api-token" type="text">
+              <span class="omrs-input-label">API kulcs</span>
+            </label>
+          </div>
+          <button>BEJELENTKEZÉS</button>
         </div>
-        <button>BEJELENTKEZÉS</button>
       </div>
     </form>
   </article>
@@ -101,7 +103,7 @@ input {
 }
 
 button {
-  margin-top: 0px;
+  margin-top: 10px;
   margin-bottom: 0px;
   width: 328px;
   height: 40px;
@@ -114,8 +116,8 @@ button {
 .right {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   align-items: flex-start;
+  justify-content: center;
 }
 
 .toast {
