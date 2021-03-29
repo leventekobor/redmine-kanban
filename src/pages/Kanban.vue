@@ -66,7 +66,7 @@ export default {
 
     async function add(event){
       const movedTo = event.to.parentNode.firstElementChild.textContent
-      const movedTitle = event.item.innerText
+      const movedTitle = event.item.innerText.split("Szerző")[0]
       const newStatusId = uniqueStatusNamesWithIds.find(i => i.name === movedTo).id
       const originaIssue = originalIssues.find(i => i.subject === movedTitle)
       
