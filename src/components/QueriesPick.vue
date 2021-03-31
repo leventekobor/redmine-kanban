@@ -47,7 +47,9 @@ export default {
           queires.value = [...queires.value, response.queires]
         }
       }
-      queires.value = queires.value.filter(i => i.project_id === store.state.project.id)
+      //96a61cb044917dd17a0f993060455281698a6462
+      console.log
+      queires.value = queires.value.filter(i => i?.project_id === store.state.project.id)
       queiresOrdered.value = queires.value.map(({ id, name }) => ({ value:id, name:name }))
     }
   
