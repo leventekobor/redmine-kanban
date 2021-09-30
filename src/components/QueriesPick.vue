@@ -34,23 +34,23 @@ export default {
     let projectsOrdered = ref()
     let selectedQuerie = ref()
     const store = useStore()
-    let queires = ref()
+    let queires
     let queiresOrdered = ref()
   
     async function getProjectQueries() {
       let response = (await RedmineService.getProjectQueries(store.state.user.api_key, 0)).data
-      queires.value = response.queries
+      queires = response.queries
       if(response.total_count > 100) {
         const iterations = Math.ceil(response.total_count / 100)
         for(let i = 1; i < iterations; i++) {
           response = (await RedmineService.getProjectQueries(store.state.user.api_key, (i * 100))).data
-          queires.value = [...queires.value, response.queires]
+          let foo = response.queries
+          queires = queires.concat(foo)
         }
       }
-      //96a61cb044917dd17a0f993060455281698a6462
-      console.log
-      queires.value = queires.value.filter(i => i?.project_id === store.state.project.id)
-      queiresOrdered.value = queires.value.map(({ id, name }) => ({ value:id, name:name }))
+
+      const temp = queires.filter(i => i?.project_id === store.state.project.id)
+      queiresOrdered.value = temp.map(({ id, name }) => ({ value:id, name:name }))
     }
   
     function addQuerie() {
