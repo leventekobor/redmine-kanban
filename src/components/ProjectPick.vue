@@ -44,7 +44,8 @@ export default {
         const iterations = Math.ceil(response.total_count / 100)
         for(let i = 1; i < iterations; i++) {
           response = (await RedmineService.getProjects(store.state.user.api_key, (i * 100))).data
-          projects.value = [...projects.value, response.projects]
+          let foo = response.projects
+          projects.value = projects.value.concat(foo)
         }
       }
       projectsOrdered.value = projects.value.map(({ id, name }) => ({ value:id, name:name }))
