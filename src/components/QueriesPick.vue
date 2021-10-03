@@ -34,23 +34,30 @@ export default {
     let projectsOrdered = ref()
     let selectedQuerie = ref()
     const store = useStore()
-    let queires
     let queiresOrdered = ref()
   
+    async function _getProjectQueriesWithOffset(offset=0) {
+        const response = await RedmineService.getProjectQueries(store.state.user.api_key, offset)
+        return {
+          queries: response?.data?.queries || [],
+          total_count: response?.data?.total_count || 0
+        }
+    }
+    
     async function getProjectQueries() {
-      let response = (await RedmineService.getProjectQueries(store.state.user.api_key, 0)).data
-      queires = response.queries
-      if(response.total_count > 100) {
-        const iterations = Math.ceil(response.total_count / 100)
+      const PAGE_SIZE = 100;
+      const { queries: firstQueries, total_count } = await _getProjectQueriesWithOffset();
+      let queries = [...firstQueries];
+      if(total_count > PAGE_SIZE) {
+        const iterations = Math.ceil(total_count / PAGE_SIZE)
         for(let i = 1; i < iterations; i++) {
-          response = (await RedmineService.getProjectQueries(store.state.user.api_key, (i * 100))).data
-          let foo = response.queries
-          queires = queires.concat(foo)
+          const { queries: currentQueries } = await _getProjectQueriesWithOffset(i * PAGE_SIZE)
+          queries = [...queries, ...currentQueries]
         }
       }
 
-      const temp = queires.filter(i => i?.project_id === store.state.project.id)
-      queiresOrdered.value = temp.map(({ id, name }) => ({ value:id, name:name }))
+      const filteredQueries = queries.filter(i => i?.project_id === store.state.project.id)
+      queiresOrdered.value = filteredQueries.map(({ id, name }) => ({ value:id, name:name }))
     }
   
     function addQuerie() {

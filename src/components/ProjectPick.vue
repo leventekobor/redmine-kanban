@@ -32,29 +32,38 @@ export default {
     Multiselect
   },
   setup(_, { emit }) {
-    let projects = ref()
     let projectsOrdered = ref()
     let selectedProject = ref()
     const store = useStore()
+    let projects
 
+    async function _getProjectsWithOffset(offset=0) {
+        const response = await RedmineService.getProjects(store.state.user.api_key, offset)
+        return {
+          projects: response?.data?.projects || [],
+          total_count: response?.data?.total_count || 0
+        }
+    }
+    
     async function getProjects() {
-      let response = (await RedmineService.getProjects(store.state.user.api_key, 0)).data
-      projects.value = response.projects
-      if(response.total_count > 100) {
-        const iterations = Math.ceil(response.total_count / 100)
+      const PAGE_SIZE = 100;
+      const { projects: firstProjects, total_count } = await _getProjectsWithOffset();
+      projects = [...firstProjects];
+      if(total_count > PAGE_SIZE) {
+        const iterations = Math.ceil(total_count / PAGE_SIZE)
         for(let i = 1; i < iterations; i++) {
-          response = (await RedmineService.getProjects(store.state.user.api_key, (i * 100))).data
-          let foo = response.projects
-          projects.value = projects.value.concat(foo)
+          const { projects: currentProjects } = await _getProjectsWithOffset(i * PAGE_SIZE)
+          projects = [...projects, ...currentProjects]
         }
       }
-      projectsOrdered.value = projects.value.map(({ id, name }) => ({ value:id, name:name }))
+      console.log(projects)
+      projectsOrdered.value = projects.map(({ id, name }) => ({ value:id, name:name }))
     }
 
     function addProject() {
       store.commit({
         type: 'addProject',
-        payload: projects.value.filter(i => i.id === selectedProject.value)[0]
+        payload: projects.filter(i => i.id === selectedProject.value)[0]
       })
       emit('increaseStepCount', 2);
     }
