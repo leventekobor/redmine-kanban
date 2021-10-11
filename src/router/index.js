@@ -24,5 +24,6 @@ const routes = [
 export default createRouter({
   mode: 'history',
   history: createWebHistory(),
-  routes
+  routes,
+  base: '/'
 })
