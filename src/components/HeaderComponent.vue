@@ -44,6 +44,7 @@ header {
   justify-content: center;
   align-items: flex-start;
   margin-right: 15px;
+  margin-left: 30px;
 }
 
 .small-text {

@@ -2,7 +2,7 @@
   <article>
     <form @submit.prevent="getUser" class="form-control">
       <div class="left">
-        <img src="../assets/rocket.svg" alt="">
+        <img src="../../public/rocket.svg" alt="">
       </div>
       <div class="right">
         <h1 style="margin-bottom: 50px;">Redmine kanban board</h1>
