@@ -2,7 +2,7 @@
 
 ## Configure
 
-- in the `src/services/Api.js` change the `baseURL` value to the URL of your backend proxy *if you are running the backend proxy locally this should be: http://localhost:3000 - if you set PORT=3000*
+- in the `src/services/Api.js` change the `baseURL` value to the URL of your backend proxy *if you are running the backend proxy locally this should be: http://localhost:3000/api - if you set PORT=3000*
 
 ## Start the application
 
