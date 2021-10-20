@@ -1,24 +1,10 @@
-# redmine-kanban
+# Redmine kanban
 
-## Project setup
-```
-npm install
-```
+## Configure
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+- in the `src/services/Api.js` change the `baseURL` value to the URL of your backend proxy *if you are running the backend proxy locally this should be: http://localhost:3000 - if you set PORT=3000*
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Start the application
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- to install dependencies run: `npm i`
+- to start the application: `npm run start`
