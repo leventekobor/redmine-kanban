@@ -8,3 +8,9 @@
 
 - to install dependencies run: `npm i`
 - to start the application: `npm run start`
+
+## Build the application
+
+- to build the application: `npm run start`
+- to run the built version you will need serve, so download it: `npm install -g serve`
+- and run: `serve -s dist`
