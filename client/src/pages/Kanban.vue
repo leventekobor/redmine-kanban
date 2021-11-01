@@ -13,7 +13,7 @@
           group="issues"
         >
           <template #item="{ element }">
-            <div class="list-item">
+            <div class="list-item" v-bind:id="element.id">
               <div class="title">{{ element.subject }}</div>
               <div>Szerző: {{ element.author.name }} </div>
               <div v-if="element?.assigned_to?.name">Felelős: {{ element.assigned_to.name }} </div>
