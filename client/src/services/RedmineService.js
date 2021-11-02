@@ -9,7 +9,7 @@ export default {
     })
   },
   getIssues(apiKey, issueId) {
-    return Api().get(`issues.json`, {
+    return Api().get('issues.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
       },
@@ -19,7 +19,7 @@ export default {
     })
   },
   getProjects(apiKey, offset) {
-    return Api().get(`projects.json`, {
+    return Api().get('projects.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
       },
@@ -30,7 +30,7 @@ export default {
     })
   },
   getProjectQueries(apiKey, offset) {
-    return Api().get(`queries.json`, {
+    return Api().get('queries.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
       },
@@ -41,7 +41,7 @@ export default {
     })
   },
   getAllUpdatedIssuesIn2020(apiKey, offset) {
-    return Api().get(`issues.json`, {
+    return Api().get('issues.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
       },
@@ -66,7 +66,7 @@ export default {
     })
   },
   getAllTimeEntriesIn2020(apiKey, offset) {
-    return Api().get(`time_entries.json`, {
+    return Api().get('time_entries.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
       },
@@ -80,7 +80,7 @@ export default {
     })
   },
   updateIssueStatus(apiKey, issueId, statusId) {
-    return Api().put(`issues/${issueId}.json`, {
+    return Api().put('issues/${issueId}.json', {
       "issue": {
         "status_id": statusId
       }
