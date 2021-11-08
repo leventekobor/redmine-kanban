@@ -2,11 +2,11 @@
   <section class="app-container">
     <h1>Kanban board</h1>
     <div class="kanban">
-      <div v-for="(issues) in issuesByStatus" :key="issues">
-        <h2 v-if="(issues[0])">{{ issues[0].status.name }}</h2>
+      <div v-for="status in columnConfig" :key="status.id">
+        <h2 class="status-name">{{ status.name }}</h2>
         <draggable
           class="list-group"
-          :list="issues"
+          :list="issuesForProject.filter(issue => issue.status.id === status.id)"
           @change="log"
           @add="add"
           itemKey="subject"
@@ -37,47 +37,51 @@ export default {
     draggable
   },
   setup() {
-    let uniqueStatusNamesWithIds
-    let originalIssues
+    let issuesForProject = ref([])
     const store = useStore()
-    let issuesByStatus = ref([])
-
+    // let issuesByStatus = ref([])
+    let columnConfig = ref([])
     function log() {
       //window.console.log(evt)
     }
-
+    async function setupColumnConfig() {
+      let redmineStatuses = (await RedmineService.getKanbanConfigStatuses(store.state.user.api_key)).data.issue_statuses
+      let configIssue = (await RedmineService.getKanbanConfig(store.state.user.api_key, store.state.project.id)).data.issues[0]
+      let columnNames = JSON.parse(configIssue.description).config.columns;
+      columnConfig.value = redmineStatuses.filter(status => columnNames.includes(status.name))
+    }
     async function getIssuesForProject(){
-      let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data
-      originalIssues = response.issues
+      issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
+      // issuesForProject.value = response.issues
 
-      const uniqueStatusNames = response.issues.reduce((acc, curr) => {
-        return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
-      }, []);
-
-      issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
-      
-
-      uniqueStatusNamesWithIds = response.issues.reduce((acc, curr) => {
-        return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
-      }, []);
+      // originalIssues = response.issues
+      //
+      // const uniqueStatusNames = response.issues.reduce((acc, curr) => {
+      //   return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
+      // }, []);
+      //
+      // issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
     }
 
     async function add(event){
       const movedTo = event.to.parentNode.firstElementChild.textContent
-      const movedTitle = event.item.innerText.split("Szerző")[0]
-      const newStatus = uniqueStatusNamesWithIds.find(i => i.name === movedTo)
-      const originaIssue = originalIssues.find(i => i.subject === movedTitle)
-      originaIssue.status = newStatus
-      let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatus.id)).data
+      const movedTitle = event.item.innerText.split("\n")[0]
+      const newStatus = columnConfig.value.find(i => i.name === movedTo)
+      const originalIssue = issuesForProject.value.find(i => i.subject === movedTitle)
+      originalIssue.status = newStatus
+      let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originalIssue.id, newStatus.id)).data
       console.log(response)
     }
-
-    onMounted(getIssuesForProject)
+    onMounted(() => {
+      setupColumnConfig()
+      getIssuesForProject()
+    })
 
     return {
       log,
       add,
-      issuesByStatus
+      issuesForProject,
+      columnConfig
     }
   }
 }
@@ -113,4 +117,7 @@ export default {
   font-weight: 600;
 }
 
+.status-name {
+  margin: 30px;
+}
 </style>
