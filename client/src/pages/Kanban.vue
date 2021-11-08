@@ -6,7 +6,7 @@
         <h2 class="status-name">{{ status.name }}</h2>
         <draggable
           class="list-group"
-          :list="issuesForProject.filter(issue => issue.status.id === status.id)"
+          :list="issuesByStatus[status.name]"
           @change="log"
           @add="add"
           itemKey="subject"
@@ -30,6 +30,7 @@ import { ref, onMounted } from 'vue'
 import draggable from 'vuedraggable'
 import RedmineService from '@/services/RedmineService.js'
 import { useStore } from "vuex"
+import lodash from "lodash"
 
 export default {
   name: "Kanban",
@@ -37,9 +38,9 @@ export default {
     draggable
   },
   setup() {
-    let issuesForProject = ref([])
+    let issuesForProject = []
+    let issuesByStatus = ref([])
     const store = useStore()
-    // let issuesByStatus = ref([])
     let columnConfig = ref([])
     function log() {
       //window.console.log(evt)
@@ -50,27 +51,19 @@ export default {
       let columnNames = JSON.parse(configIssue.description).config.columns;
       columnConfig.value = redmineStatuses.filter(status => columnNames.includes(status.name))
     }
-    async function getIssuesForProject(){
+    async function getIssuesForProject() {
       issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
-      // issuesForProject.value = response.issues
-
-      // originalIssues = response.issues
-      //
-      // const uniqueStatusNames = response.issues.reduce((acc, curr) => {
-      //   return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
-      // }, []);
-      //
-      // issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
+      issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
     }
 
     async function add(event){
       const movedTo = event.to.parentNode.firstElementChild.textContent
-      const movedTitle = event.item.innerText.split("\n")[0]
+      const movedTitle = event.item.innerText.split("Szerző")[0].trim()
       const newStatus = columnConfig.value.find(i => i.name === movedTo)
       const originalIssue = issuesForProject.value.find(i => i.subject === movedTitle)
       originalIssue.status = newStatus
-      let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originalIssue.id, newStatus.id)).data
-      console.log(response)
+      issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
+      await RedmineService.updateIssueStatus(store.state.user.api_key, originalIssue.id, newStatus.id)
     }
     onMounted(() => {
       setupColumnConfig()
@@ -80,7 +73,7 @@ export default {
     return {
       log,
       add,
-      issuesForProject,
+      issuesByStatus,
       columnConfig
     }
   }
