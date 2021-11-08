@@ -98,7 +98,7 @@ export default class RedmineService{
       }
     })
   }
-  static async getKanbanConfigStatuses(apiKey) {
+  static async getRedmineStatuses(apiKey) {
     return Api().get('issue_statuses.json', {
       headers: {
         'X-Redmine-API-Key': apiKey

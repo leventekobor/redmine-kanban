@@ -39,14 +39,14 @@ export default {
   },
   setup() {
     let issuesForProject = []
-    let issuesByStatus = ref([])
+    let issuesByStatus = ref()
     const store = useStore()
     let columnConfig = ref([])
     function log() {
       //window.console.log(evt)
     }
     async function setupColumnConfig() {
-      let redmineStatuses = (await RedmineService.getKanbanConfigStatuses(store.state.user.api_key)).data.issue_statuses
+      let redmineStatuses = (await RedmineService.getRedmineStatuses(store.state.user.api_key)).data.issue_statuses
       let configIssue = (await RedmineService.getKanbanConfig(store.state.user.api_key, store.state.project.id)).data.issues[0]
       let columnNames = JSON.parse(configIssue.description).config.columns;
       columnConfig.value = redmineStatuses.filter(status => columnNames.includes(status.name))
