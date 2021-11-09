@@ -28,11 +28,12 @@
 import { ref } from 'vue'
 import RedmineService from '@/services/RedmineService.js'
 import store from '@/store/store'
+import { useRouter } from 'vue-router'
 
 export default {
   name: "Login",
-  emits: ["increaseStepCount"],
-  setup(_,{ emit }) {
+  setup() {
+    const router = useRouter()
     const apiKey = ref('')
     let user = ref('')
     let isActive = ref(false)
@@ -45,8 +46,9 @@ export default {
           type: 'addUser',
           payload: response.data.user
         })
-        emit('increaseStepCount', 1);
+        router.push('/project_pick')
       } catch (error) {
+        console.log(error)
         isActive.value = true
         setTimeout(() => isActive.value = false, 2000)
         apiKey.value = ""

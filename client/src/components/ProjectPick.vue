@@ -25,13 +25,15 @@ import { ref, onMounted } from 'vue'
 import RedmineService from '@/services/RedmineService.js'
 import Multiselect from '@vueform/multiselect'
 import { useStore } from "vuex"
+import { useRouter } from 'vue-router'
 
 export default {
   name: "ProjectPick",
   components: {
     Multiselect
   },
-  setup(_, { emit }) {
+  setup() {
+    const router = useRouter()
     let projectsOrdered = ref()
     let selectedProject = ref()
     const store = useStore()
@@ -65,7 +67,12 @@ export default {
         type: 'addProject',
         payload: projects.filter(i => i.id === selectedProject.value)[0]
       })
-      emit('increaseStepCount', 2);
+      store.commit({
+        type: 'addQuerie',
+        payload: null
+      })
+
+      router.push('/query_pick')
     }
 
     onMounted(getProjects) 

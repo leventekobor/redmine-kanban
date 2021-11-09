@@ -7,6 +7,9 @@ const store = createStore({
       },
       project: {
 
+      },
+      query: {
+
       }
    },
    mutations: {
@@ -17,8 +20,7 @@ const store = createStore({
          state.project = {...payload.payload}
       },
       addQuerie (state, payload) {
-         state.project.query_id = payload.payload
-         //console.log(state.project)
+         state.query = {...payload.payload}
       }
    }
 })

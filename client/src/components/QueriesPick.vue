@@ -24,17 +24,21 @@ import { ref, onMounted } from 'vue'
 import RedmineService from '@/services/RedmineService.js'
 import Multiselect from '@vueform/multiselect'
 import { useStore } from "vuex"
+import { useRouter } from 'vue-router'
+
 
 export default {
   name: "ProjectPick",
   components: {
     Multiselect
   },
-  setup(_, { emit }) {
+  setup() {
+    const router = useRouter()
     let projectsOrdered = ref()
     let selectedQuerie = ref()
     const store = useStore()
     let queiresOrdered = ref()
+    let queries
   
     async function _getProjectQueriesWithOffset(offset=0) {
         const response = await RedmineService.getProjectQueries(store.state.user.api_key, offset)
@@ -47,7 +51,7 @@ export default {
     async function getProjectQueries() {
       const PAGE_SIZE = 100;
       const { queries: firstQueries, total_count } = await _getProjectQueriesWithOffset();
-      let queries = [...firstQueries];
+      queries = [...firstQueries];
       if(total_count > PAGE_SIZE) {
         const iterations = Math.ceil(total_count / PAGE_SIZE)
         for(let i = 1; i < iterations; i++) {
@@ -63,9 +67,9 @@ export default {
     function addQuerie() {
       store.commit({
         type: 'addQuerie',
-        payload: selectedQuerie.value
+        payload: queries.filter(i => i.id === selectedQuerie.value)[0]
       })
-      emit('increaseStepCount', 3);
+      router.push('/kanban')
     }
 
     onMounted(getProjectQueries) 
