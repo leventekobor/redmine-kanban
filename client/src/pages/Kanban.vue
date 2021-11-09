@@ -1,6 +1,7 @@
 <template>
   <section class="app-container">
     <h1>Kanban board</h1>
+    <input type="text" placeholder="filter" v-model="searchKeyWord" name="" id="">
     <div class="kanban">
       <div v-for="(issues) in issuesByStatus" :key="issues">
         <h2>{{ issues[0].status.name }}</h2>
@@ -41,6 +42,9 @@ export default {
     let originalIssues
     const store = useStore()
     let issuesByStatus = ref([])
+    let rawIssues
+    let trackedProperties = []
+    let searchKeyWord = ref()
 
     function log() {
       //window.console.log(evt)
@@ -61,7 +65,14 @@ export default {
         return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
       }, []);
 
-      console.log(issuesByStatus.value)
+      //issuesByStatus.value.forEach(element => console.log("log: " + Object.values(element)))
+      rawIssues = Object.values(issuesByStatus.value.flat())
+      //console.log(rawIssues)
+      
+      Object.keys(rawIssues[0]).forEach(
+        elem => trackedProperties.push(elem)
+      )
+      console.log(trackedProperties)
     }
 
     async function add(event){
@@ -71,7 +82,7 @@ export default {
       const originaIssue = originalIssues.find(i => i.subject === movedTitle)
       
       let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatusId)).data
-      console.log(response)
+      console.log("response: " + response)
     }
 
     onMounted(getIssuesForProject)
@@ -79,7 +90,8 @@ export default {
     return {
       log,
       add,
-      issuesByStatus
+      issuesByStatus,
+      searchKeyWord
     }
   }
 }

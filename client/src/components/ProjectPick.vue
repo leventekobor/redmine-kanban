@@ -56,7 +56,6 @@ export default {
           projects = [...projects, ...currentProjects]
         }
       }
-      console.log(projects)
       projectsOrdered.value = projects.map(({ id, name }) => ({ value:id, name:name }))
     }
 
