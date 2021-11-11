@@ -27,10 +27,11 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import draggable from 'vuedraggable'
 import RedmineService from '@/services/RedmineService.js'
 import { useStore } from "vuex"
+import useDebouncedRef from '@/composables/useDebouncedRef'
 
 export default {
   name: "Kanban",
@@ -40,11 +41,10 @@ export default {
   setup() {
     let uniqueStatusNamesWithIds
     let originalIssues
+    let originalIssuesStringifyed
     const store = useStore()
     let issuesByStatus = ref([])
-    let rawIssues
-    let trackedProperties = []
-    let searchKeyWord = ref()
+    const searchKeyWord = useDebouncedRef('', 2000)
 
     function log() {
       //window.console.log(evt)
@@ -53,6 +53,7 @@ export default {
     async function getIssuesForProject(){
       let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.project.query_id, store.state.project.id)).data
       originalIssues = response.issues
+      originalIssuesStringifyed = JSON.stringify(originalIssues).split('},{')
 
       const uniqueStatusNames = response.issues.reduce((acc, curr) => {
         return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
@@ -60,19 +61,9 @@ export default {
 
       issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
       
-
       uniqueStatusNamesWithIds = response.issues.reduce((acc, curr) => {
         return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
       }, []);
-
-      //issuesByStatus.value.forEach(element => console.log("log: " + Object.values(element)))
-      rawIssues = Object.values(issuesByStatus.value.flat())
-      //console.log(rawIssues)
-      
-      Object.keys(rawIssues[0]).forEach(
-        elem => trackedProperties.push(elem)
-      )
-      console.log(trackedProperties)
     }
 
     async function add(event){
@@ -81,11 +72,39 @@ export default {
       const newStatusId = uniqueStatusNamesWithIds.find(i => i.name === movedTo).id
       const originaIssue = originalIssues.find(i => i.subject === movedTitle)
       
-      let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatusId)).data
-      console.log("response: " + response)
+      await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatusId).data
     }
 
+    /*
+    const debounce = (callback, wait) => {
+      let timeout;
+      return (...args) => {
+          const context = this;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => callback.apply(context, args), wait);
+      };
+    }
+    */
+
     onMounted(getIssuesForProject)
+
+    const indexOfAll = (arr, val) => arr.reduce((acc, el, i) => ((el.toLowerCase()).includes(val.toLowerCase()) ? [...acc, i] : acc), [])
+    
+    const searchByKeyWord = (searchKeyWord) => {
+      const foundIndexes = indexOfAll(originalIssuesStringifyed, searchKeyWord)
+      const foundItems = []
+      foundIndexes.forEach(i => foundItems.push(originalIssues[i]))
+      return foundItems
+    }
+
+
+
+    watch(searchKeyWord, () => {
+      console.log('keyword', searchKeyWord)
+      console.log('type of keyword', typeof(searchKeyWord.value.toString()))
+      const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
+      console.log(issuesToHighlight)
+    })
 
     return {
       log,
