@@ -44,7 +44,7 @@ export default {
     let originalIssuesStringifyed
     const store = useStore()
     let issuesByStatus = ref([])
-    const searchKeyWord = useDebouncedRef('', 2000)
+    const searchKeyWord = useDebouncedRef('', 800)
 
     function log() {
       //window.console.log(evt)
@@ -59,7 +59,9 @@ export default {
         return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
       }, []);
 
-      issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name));
+      issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name))
+
+      console.log(issuesByStatus)
       
       uniqueStatusNamesWithIds = response.issues.reduce((acc, curr) => {
         return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
@@ -92,18 +94,27 @@ export default {
     
     const searchByKeyWord = (searchKeyWord) => {
       const foundIndexes = indexOfAll(originalIssuesStringifyed, searchKeyWord)
-      const foundItems = []
+      let foundItems = []
       foundIndexes.forEach(i => foundItems.push(originalIssues[i]))
       return foundItems
     }
 
-
-
     watch(searchKeyWord, () => {
-      console.log('keyword', searchKeyWord)
-      console.log('type of keyword', typeof(searchKeyWord.value.toString()))
-      const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
-      console.log(issuesToHighlight)
+      if (searchKeyWord.value != '') {
+        const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
+        const matches = document.querySelectorAll(".list-item")
+        matches.forEach(i => {
+          console.log(i)
+          if(issuesToHighlight.find(j => j.id != i.id)) {
+            i.style.display = 'none'
+          }
+        })
+      } else {
+        const matches = document.querySelectorAll(".list-item")
+        matches.forEach(i => {
+            i.style.display = 'flex'
+        })
+      }
     })
 
     return {
@@ -144,6 +155,10 @@ export default {
 .title {
   font-size: 17px;
   font-weight: 600;
+}
+
+.display {
+  display: none;
 }
 
 </style>
