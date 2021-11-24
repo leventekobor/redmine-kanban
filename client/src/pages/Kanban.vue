@@ -60,8 +60,6 @@ export default {
       }, []);
 
       issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name))
-
-      console.log(issuesByStatus)
       
       uniqueStatusNamesWithIds = response.issues.reduce((acc, curr) => {
         return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
@@ -103,9 +101,12 @@ export default {
       if (searchKeyWord.value != '') {
         const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
         const matches = document.querySelectorAll(".list-item")
+        console.log(matches)
+        console.log(issuesToHighlight)
         matches.forEach(i => {
-          console.log(i)
-          if(issuesToHighlight.find(j => j.id != i.id)) {
+          console.log('i', i.id)
+          // arr1.some( ai => arr2.includes(ai) )
+          if(!(issuesToHighlight.some(j => j.id == i.id))) {
             i.style.display = 'none'
           }
         })
