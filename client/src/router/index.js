@@ -1,13 +1,25 @@
-import Home from '@/pages/Home'
+import { createRouter, createWebHistory } from 'vue-router'
+import Login from '@/components/Login'
 import Kanban from '@/pages/Kanban'
 import NotFound from '@/pages/NotFound'
-import { createRouter, createWebHistory } from 'vue-router'
+import ProjectPick from "../components/ProjectPick";
+import QueriesPick from "../components/QueriesPick";
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/project_pick',
+    name: 'ProjectPick',
+    component: ProjectPick
+  },
+  {
+    path: '/query_pick',
+    name: 'QueryPick',
+    component: QueriesPick
   },
   {
     path: '/kanban',
@@ -21,8 +33,10 @@ const routes = [
   }
 ]
 
-export default createRouter({
+const router = createRouter({
   mode: 'history',
   history: createWebHistory(),
   routes
 })
+
+export default router

@@ -1,6 +1,6 @@
 <template>
-  <HeaderComponent v-if="user.firstname"/>
-  <div>
+  <HeaderComponent/>
+  <div  class="app-container">
     <router-view/>
   </div>
 </template>
@@ -18,8 +18,6 @@ export default {
   setup() {
     const store = useStore();
     const user = computed(() => store.state.user);
-
-    
     return {
       user
     }
@@ -44,5 +42,11 @@ export default {
 body {
   background: linear-gradient(100deg, #36B342 0%, rgba(0, 0, 0, 0.37) 100%);
 }
-
+.app-container {
+  display: inline-block;
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 5rem;
+}
 </style>

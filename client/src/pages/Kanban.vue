@@ -4,7 +4,7 @@
     <input type="text" placeholder="filter" v-model="searchKeyWord" name="" id="">
     <div class="kanban">
       <div v-for="(issues) in issuesByStatus" :key="issues">
-        <h2>{{ issues[0].status.name }}</h2>
+        <h2 v-if="(issues[0])">{{ issues[0].status.name }}</h2>
         <draggable
           class="list-group"
           :list="issues"
@@ -51,7 +51,7 @@ export default {
     }
 
     async function getIssuesForProject(){
-      let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.project.query_id, store.state.project.id)).data
+      let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data
       originalIssues = response.issues
       originalIssuesStringifyed = JSON.stringify(originalIssues).split('},{')
 
@@ -69,22 +69,12 @@ export default {
     async function add(event){
       const movedTo = event.to.parentNode.firstElementChild.textContent
       const movedTitle = event.item.innerText.split("Szerző")[0]
-      const newStatusId = uniqueStatusNamesWithIds.find(i => i.name === movedTo).id
+      const newStatus = uniqueStatusNamesWithIds.find(i => i.name === movedTo)
       const originaIssue = originalIssues.find(i => i.subject === movedTitle)
-      
-      await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatusId).data
+      originaIssue.status = newStatus
+      let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatus.id)).data
+      console.log(response)
     }
-
-    /*
-    const debounce = (callback, wait) => {
-      let timeout;
-      return (...args) => {
-          const context = this;
-          clearTimeout(timeout);
-          timeout = setTimeout(() => callback.apply(context, args), wait);
-      };
-    }
-    */
 
     onMounted(getIssuesForProject)
 

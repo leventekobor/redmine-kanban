@@ -2,17 +2,23 @@ require('dotenv').config()
 const express = require('express')
 const request = require('request')
 const cors = require('cors')
+const logger = require("./logger")
 
 const port = process.env.PORT || 3000
 var app = express()
 app.use(cors())
 
-console.log(process.env.BASE_URL)
+logger.info(process.env.BASE_URL)
 
 app.use('/api', function(req, res) {
+    let startTime = new Date()
+    logger.info("Incoming " + req.method + " request")
+    logger.debug("request URL: " + req.url)
     req.pipe(request(process.env.BASE_URL + req.url)).pipe(res);
+    let endTime = new Date()
+    logger.info("Response %s. Completed in: %dms", res.statusCode, (endTime - startTime))
 })
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    logger.info(`Example app listening at http://localhost:${port}`)
 })

@@ -8,11 +8,13 @@ This project serves as a backend proxy for a Redmine based application. The fron
 - in this `.env` file set the following values: 
   - PORT
   - BASE_URL
+  - NODE_LOGGING_LEVEL
 
 *exmaple .env file*
 ```
 PORT=3000
 BASE_URL=http://redmine-url.com
+NODE_LOGGING_LEVEL=info
 ```
 
 ## Start the application
