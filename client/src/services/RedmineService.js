@@ -90,5 +90,15 @@ export default {
         'X-Redmine-API-Key': apiKey
       }
     })
+  },
+  getUserByPassword(username, password, baseUrl) {
+    console.log('user', username)
+    console.log('pass', password)
+    console.log('baseUrl', baseUrl)
+    console.log(`https://${username}:${password}@${baseUrl}users/current.json`)
+    return Api().get(`https://${username}:${password}@${baseUrl}users/current.json`)
+  },
+  getBaseUrl() {
+    return Api().get('/base')
   }
 }

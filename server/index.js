@@ -10,6 +10,10 @@ app.use(cors())
 
 logger.info(process.env.BASE_URL)
 
+app.get('/api/base', function(req, res) {
+    res.send(process.env.BASE_URL)
+})
+
 app.use('/api', function(req, res) {
     let startTime = new Date()
     logger.info("Incoming " + req.method + " request")

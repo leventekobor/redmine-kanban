@@ -9,11 +9,22 @@
         <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
         <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
         <div style="margin-top: 80px;">
-          <h4>Bejelentkezés</h4>
+          <h4>Bejelentkezés API kulccsal</h4>
           <div class="omrs-input-group">
             <label class="omrs-input-underlined">
-              <input required v-model="apiKey" id="api-token" name="api-token" type="text">
+              <input v-model="apiKey" id="api-token" name="api-token" type="text">
               <span class="omrs-input-label">API kulcs</span>
+            </label>
+          </div>
+          <h4>Bejelentkezés felhasználónév és jelszóval</h4>
+          <div class="omrs-input-group">
+            <label class="omrs-input-underlined">
+              <input v-model="username" id="username" name="username" type="text">
+              <span class="omrs-input-label">felhasználónév</span>
+            </label>
+            <label class="omrs-input-underlined">
+              <input v-model="password" id="password" name="password" type="password">
+              <span class="omrs-input-label">Jelszó</span>
             </label>
           </div>
           <button>BEJELENTKEZÉS</button>
@@ -35,23 +46,45 @@ export default {
   setup() {
     const router = useRouter()
     const apiKey = ref('')
+    const username = ref('')
+    const password = ref('')
     let user = ref('')
     let isActive = ref(false)
 
     async function getUser() {
-      try {
-        const response = (await RedmineService.getUser(apiKey.value))
-        user.value = response.data
-        store.commit({
-          type: 'addUser',
-          payload: response.data.user
-        })
-        router.push('/project_pick')
-      } catch (error) {
-        console.log(error)
-        isActive.value = true
-        setTimeout(() => isActive.value = false, 2000)
-        apiKey.value = ""
+      if(username.value && password.value) {
+        console.log('from dom pass', password)
+        try {
+          const response = await RedmineService.getBaseUrl().then(async (res) => 
+            await RedmineService.getUserByPassword(username.value, password.value, res.data.split('://')[1])
+          )
+          user.value = response.data
+          store.commit({
+            type: 'addUser',
+            payload: response.data.user
+          })
+          router.push('/project_pick')
+        } catch (error) {
+          console.log(error)
+          isActive.value = true
+          setTimeout(() => isActive.value = false, 2000)
+          apiKey.value = ""
+        }
+      } else {
+        try {
+          const response = (await RedmineService.getUser(apiKey.value))
+          user.value = response.data
+          store.commit({
+            type: 'addUser',
+            payload: response.data.user
+          })
+          router.push('/project_pick')
+        } catch (error) {
+          console.log(error)
+          isActive.value = true
+          setTimeout(() => isActive.value = false, 2000)
+          apiKey.value = ""
+        }
       }
     }
 
@@ -59,7 +92,9 @@ export default {
       apiKey,
       user,
       isActive,
-      getUser
+      getUser,
+      username,
+      password
     }
   }
 }
