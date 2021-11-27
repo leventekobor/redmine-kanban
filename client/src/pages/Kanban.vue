@@ -1,7 +1,7 @@
 <template>
   <section class="app-container">
     <h1>Kanban board</h1>
-    <input type="text" placeholder="filter" v-model="searchKeyWord" name="" id="">
+    <input class="filter-field" type="text" placeholder="filter" v-model="searchKeyWord" name="" id="">
     <div class="kanban">
       <div v-for="(issues) in issuesByStatus" :key="issues">
         <h2 v-if="(issues[0])">{{ issues[0].status.name }}</h2>
@@ -150,6 +150,11 @@ export default {
 
 .display {
   display: none;
+}
+
+.filter-field {
+  padding: 4px;
+  margin: 0 20px 20px;
 }
 
 </style>
