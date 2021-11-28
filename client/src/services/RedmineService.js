@@ -2,7 +2,7 @@ import Api from '@/services/Api'
 
 export default class RedmineService{
   static getRedmineUrl() {
-    return Api().get("redmineUrl")
+    return Api().get("redmine_url")
   }
   static getUser(apiKey) {
     return Api().get("users/current.json", {
