@@ -39,6 +39,7 @@
       draggable
     },
     setup() {
+      const issueIdRegex = /\d+/
       const store = useStore()
       const columnConfig = ref([])
       const wipLimit = ref()
@@ -77,9 +78,9 @@
 
       async function add(event){
         const movedTo = event.to.parentNode.firstElementChild.textContent
-        const movedTitle = event.item.innerText.split("Szerző")[0].trim()
+        const movedId = parseInt(event.item.innerText.match(issueIdRegex)[0])
         const newStatus = columnConfig.value.find(i => i.name === movedTo)
-        const originalIssue = issuesForProject.value.find(i => i.subject === movedTitle)
+        const originalIssue = issuesForProject.value.find(i => i.id === movedId)
         originalIssue.status = newStatus
         issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
         await RedmineService.updateIssueStatus(store.state.user.api_key, originalIssue.id, newStatus.id)
