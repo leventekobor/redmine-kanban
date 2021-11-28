@@ -6,10 +6,10 @@
         <h2 class="status-name">{{ status.name }}</h2>
         <draggable
                 class="list-group"
-                :list="issuesByStatus[status.name]"
+                :list="getLimitedList(issuesByStatus[status.name])"
                 @change="log"
                 @add="add"
-                itemKey="subject"
+                itemKey="id"
                 group="issues"
         >
           <template #item="{ element }">
@@ -39,11 +39,14 @@
       draggable
     },
     setup() {
+      const store = useStore()
+      const columnConfig = ref([])
+      const wipLimit = ref()
+      const fallbackColumnConfig = ["Új", "Folyamatban", "Megoldva"]
+      const fallbackWipLimit = 20
+
       let issuesForProject = []
       let issuesByStatus = ref()
-      const store = useStore()
-      let columnConfig = ref([])
-      const fallbackColumnConfig = ["Új", "Folyamatban", "Megoldva"]
 
       function log() {
         //window.console.log(evt)
@@ -53,14 +56,19 @@
         let redmineStatuses
         let configIssue
         let columnNames
+        let wipLimitFromConfig
         try {
           redmineStatuses = (await RedmineService.getRedmineStatuses(store.state.user.api_key)).data.issue_statuses
           configIssue = (await RedmineService.getKanbanConfig(store.state.user.api_key, store.state.project.id)).data.issues[0]
-          columnNames = JSON.parse(configIssue.description).config.columns
+          let config = JSON.parse(configIssue.description).config
+          columnNames = config.columns || fallbackColumnConfig
+          wipLimitFromConfig = config.WIP || fallbackWipLimit
         } catch (error) {
           columnNames = fallbackColumnConfig
+          wipLimitFromConfig = fallbackWipLimit
         }
         columnConfig.value = redmineStatuses.filter(status => columnNames.includes(status.name))
+        wipLimit.value = wipLimitFromConfig
       }
       async function getIssuesForProject() {
         issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
@@ -76,6 +84,15 @@
         issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
         await RedmineService.updateIssueStatus(store.state.user.api_key, originalIssue.id, newStatus.id)
       }
+
+      function getLimitedList(issueList){
+        if (issueList && issueList.length > wipLimit.value) {
+          return issueList.slice(0, wipLimit.value)
+        } else {
+          return issueList
+        }
+      }
+
       onMounted(() => {
         setupColumnConfig()
         getIssuesForProject()
@@ -85,7 +102,8 @@
         log,
         add,
         issuesByStatus,
-        columnConfig
+        columnConfig,
+        getLimitedList
       }
     }
   }
