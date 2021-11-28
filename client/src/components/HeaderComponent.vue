@@ -5,7 +5,7 @@
         <span class="small-text">Név:</span>
         <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
       </div>
-      <span class="Large-text info" v-if="user.firstname == null">Home</span>
+      <span class="Large-text info" v-else>Home</span>
     </router-link>
 
     <router-link :to="{name: 'ProjectPick'}">
@@ -50,17 +50,16 @@ header {
   background-color: white;
   height: 45px;
   display: flex;
-
 }
 
 .info {
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   margin-right: 15px;
   margin-left: 30px;
-  margin-top: 10px;
 }
 
 .small-text {

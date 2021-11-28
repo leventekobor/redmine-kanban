@@ -7,7 +7,7 @@
       <div class="right">
         <h1 style="margin-bottom: 50px;">Redmine kanban board</h1>
         <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
-        <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
+        <a :href="apiKeyUrl">Publikus API kulcs linkje</a>
         <div style="margin-top: 80px;">
           <h4>Bejelentkezés</h4>
           <div class="omrs-input-group">
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+  import {onMounted, ref} from 'vue'
 import RedmineService from '@/services/RedmineService.js'
 import store from '@/store/store'
 import { useRouter } from 'vue-router'
@@ -35,6 +35,7 @@ export default {
   setup() {
     const router = useRouter()
     const apiKey = ref('')
+    let apiKeyUrl = ref('')
     let user = ref('')
     let isActive = ref(false)
 
@@ -54,8 +55,16 @@ export default {
         apiKey.value = ""
       }
     }
+    async function getRedmineUrl() {
+      const response = await RedmineService.getRedmineUrl()
+      apiKeyUrl.value = response.data + "/my/account"
+    }
+    onMounted(() => {
+      getRedmineUrl()
+    })
 
     return {
+      apiKeyUrl,
       apiKey,
       user,
       isActive,
