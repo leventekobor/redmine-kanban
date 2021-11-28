@@ -2,7 +2,7 @@
   <header>
     <router-link :to="{name: 'Login'}">
       <div class="info" v-if="user.firstname">
-        <span class="small-text">Név:</span>
+        <span class="small-text">Name:</span>
         <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
       </div>
       <span class="Large-text info" v-else>Home</span>
@@ -10,14 +10,14 @@
 
     <router-link :to="{name: 'ProjectPick'}">
       <div class="info" v-if="project.name">
-        <span class="small-text">Projekt:</span>
+        <span class="small-text">Project:</span>
         <span class="large-text">{{ project.name }}</span>
       </div>
     </router-link>
 
     <router-link :to="{name: 'QueryPick'}">
       <div class="info" v-if="query.name">
-        <ico class="small-text">Lekérdezés:</ico>
+        <ico class="small-text">Query:</ico>
         <span class="large-text">{{ query.name }}</span>
       </div>
     </router-link>

@@ -6,22 +6,22 @@
       </div>
       <div class="right">
         <h1 style="margin-bottom: 50px;">Redmine kanban board</h1>
-        <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
-        <a :href="apiKeyUrl">Publikus API kulcs linkje</a>
+        <p>Fill in API key for login. API key is available at the link below:</p>
+        <a :href="apiKeyUrl">Public API key link</a>
         <div style="margin-top: 80px;">
-          <h4>Bejelentkezés</h4>
+          <h4>Log In</h4>
           <div class="omrs-input-group">
             <label class="omrs-input-underlined">
               <input required v-model="apiKey" id="api-token" name="api-token" type="text">
-              <span class="omrs-input-label">API kulcs</span>
+              <span class="omrs-input-label">API key</span>
             </label>
           </div>
-          <button>BEJELENTKEZÉS</button>
+          <button>LOG IN</button>
         </div>
       </div>
     </form>
   </article>
-  <div v-bind:class="{ active: isActive }" class="toast" id="errorToast">Sikertelen bejelentkezés</div>
+  <div v-bind:class="{ active: isActive }" class="toast" id="errorToast">Login failed</div>
 </template>
 
 <script>
