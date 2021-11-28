@@ -53,7 +53,6 @@ export default {
 
     async function getUser() {
       if(username.value && password.value) {
-        console.log('from dom pass', password)
         try {
           const response = await RedmineService.getBaseUrl().then(async (res) => 
             await RedmineService.getUserByPassword(username.value, password.value, res.data.split('://')[1])
