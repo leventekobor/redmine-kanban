@@ -1,8 +1,8 @@
 <template>
   <article class="full-screen">
     <form @submit.prevent="addProject">
-      <h1>Beállítások</h1>
-      <p>Válassz projektet!</p>
+      <h1>Settings</h1>
+      <p>Select a project!</p>
       <div>
         <Multiselect 
         required 
@@ -15,7 +15,7 @@
         placeholder="Type to search"
        />
       </div>
-      <button class="primary">Kiválasztás</button>
+      <button class="primary">Select</button>
     </form>
   </article>
 </template>
