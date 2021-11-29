@@ -5,6 +5,11 @@ const request = require('request')
 const routes = require('express').Router();
 const logger = require("../logger")
 
+routes.get('/api/redmine_url', function(req, res) {
+    logger.info("Serving base URL")
+    res.send(process.env.BASE_URL)
+})
+
 routes.post('/api/login', jsonParser, function(req, res) {
     const baseUrlDomain = process.env.BASE_URL.split('://')[1]
 

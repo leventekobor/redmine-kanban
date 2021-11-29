@@ -1,37 +1,31 @@
 <template>
-  <article>
+  <section class="login-container">
+    <h1>Redmine kanban board</h1>
+    <p class="info">Fill in API key for login. API key is available at the link below: <button class="as-link" @click="getAPILink">API key</button></p>
+    <h4>Log in with API key</h4>
     <form @submit.prevent="getUser" class="form-control">
-      <div class="left">
-        <img src="../../public/rocket.svg" alt="">
+      <div class="omrs-input-group">
+        <label class="omrs-input-underlined">
+          <input v-model="apiKey" id="api-token" name="api-token" type="text">
+          <span class="omrs-input-label">API key</span>
+        </label>
       </div>
-      <div class="right">
-        <h1 style="margin-bottom: 50px;">Redmine kanban board</h1>
-        <p>A belépéshez add meg az API kulcsot. Ezt az alábbi linken éred el:</p>
-        <a href="https://redmine.tigra.hu/my/account">Publikus API kulcs linkje</a> 
-        <div style="margin-top: 80px;">
-          <h4>Bejelentkezés API kulccsal</h4>
-          <div class="omrs-input-group">
-            <label class="omrs-input-underlined">
-              <input v-model="apiKey" id="api-token" name="api-token" type="text">
-              <span class="omrs-input-label">API kulcs</span>
-            </label>
-          </div>
-          <h4>Bejelentkezés felhasználónév és jelszóval</h4>
-          <div class="omrs-input-group">
-            <label class="omrs-input-underlined">
-              <input v-model="username" id="username" name="username" type="text">
-              <span class="omrs-input-label">felhasználónév</span>
-            </label>
-            <label class="omrs-input-underlined">
-              <input v-model="password" id="password" name="password" type="password">
-              <span class="omrs-input-label">Jelszó</span>
-            </label>
-          </div>
-          <button>BEJELENTKEZÉS</button>
-        </div>
+      <h4>Log in with username and password</h4>
+      <div class="omrs-input-group">
+        <label class="omrs-input-underlined">
+        <input v-model="username" id="username" name="username" type="text">
+        <span class="omrs-input-label">Username</span>
+        </label>
       </div>
+      <div class="omrs-input-group">
+        <label class="omrs-input-underlined">
+        <input v-model="password" id="password" name="password" type="password" autocomplete="on">
+        <span class="omrs-input-label">Password</span>
+        </label>
+      </div>
+      <button class="action">LOG IN</button>
     </form>
-  </article>
+  </section>
   <div v-bind:class="{ active: isActive }" class="toast" id="errorToast">Sikertelen bejelentkezés</div>
 </template>
 
@@ -52,8 +46,8 @@ export default {
     let isActive = ref(false)
 
     async function getUser() {
-      if(username.value && password.value) {
-        try {
+      try {
+        if(username.value && password.value) {
           let response = await RedmineService.getUserByPassword({
             "username": username.value, 
             "password": password.value 
@@ -64,14 +58,7 @@ export default {
             payload: response.data.user
           })
           router.push('/project_pick')
-        } catch (error) {
-          console.log(error)
-          isActive.value = true
-          setTimeout(() => isActive.value = false, 2000)
-          apiKey.value = ""
-        }
-      } else {
-        try {
+        } else {
           const response = (await RedmineService.getUser(apiKey.value))
           user.value = response.data
           store.commit({
@@ -79,39 +66,51 @@ export default {
             payload: response.data.user
           })
           router.push('/project_pick')
-        } catch (error) {
+        }
+      } catch (error) {
           console.log(error)
           isActive.value = true
           setTimeout(() => isActive.value = false, 2000)
           apiKey.value = ""
-        }
+          username.value = ""
+          password.value = ""
       }
     }
 
+    async function getAPILink() {
+      const response = await RedmineService.getRedmineUrl()
+      const apiKeyUrl = response.data + "/my/account"
+      window.open(apiKeyUrl)
+    }
+
     return {
-      apiKey,
       user,
       isActive,
       getUser,
       username,
-      password
+      password,
+      getAPILink,
+      apiKey
     }
   }
 }
 </script>
 
 <style>
-article {
-  display: grid;
-  width: 70vw;
-  height: 70vh;
+.login-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  padding: 24px;
 }
 
 .form-control {
-  display: grid;
-  grid-template-columns: fit-content(60%) 1fr;
-  grid-gap: 10px;
-  text-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
 }
 
 img {
@@ -130,7 +129,8 @@ a {
 }
 
 h4 {
-  margin-bottom: 0px;
+  margin-bottom: 6px;
+  margin-top: 12px;
   font-size: 22px;
 }
 
@@ -139,7 +139,7 @@ input {
   margin-bottom: 0px;
 }
 
-button {
+.action {
   margin-top: 10px;
   margin-bottom: 0px;
   width: 328px;
@@ -150,11 +150,13 @@ button {
   cursor: pointer;
 }
 
-.right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+.as-link {
+  display: contents;
+  border: none;
+  background: transparent;
+  color: darkblue;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .toast {
@@ -182,6 +184,7 @@ button {
   animation: fadein 0.5s, fadeout 0.5s 2.5s;
   z-index: 5;
 }
+
 
 :root {
 	--omrs-color-ink-lowest-contrast: rgba(47, 60, 85, 0.18);
