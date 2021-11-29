@@ -1,8 +1,8 @@
 <template>
   <article class="full-screen">
     <form @submit.prevent="addQuerie">
-      <h1>Beállítások</h1>
-      <p>Válassz lekérdezést!</p>
+      <h1>Settings</h1>
+      <p>Select a query!</p>
       <div>
         <Multiselect 
         required 
@@ -14,7 +14,7 @@
         :options="queiresOrdered"
         placeholder="Type to search"/>
       </div>
-      <button class="primary">Kiválasztás</button>
+      <button class="primary">Select</button>
     </form>
   </article>
 </template>

@@ -10,8 +10,9 @@ app.use(cors())
 
 logger.info(process.env.BASE_URL)
 
-app.get('/api/base', function(req, res) {
+app.get('/api/redmine_url', function(req, res) {
     res.send(process.env.BASE_URL)
+    logger.info("base url is served")
 })
 
 app.use('/api', function(req, res) {

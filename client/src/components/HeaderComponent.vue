@@ -2,22 +2,22 @@
   <header>
     <router-link :to="{name: 'Login'}">
       <div class="info" v-if="user.firstname">
-        <span class="small-text">Név:</span>
+        <span class="small-text">Name:</span>
         <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
       </div>
-      <span class="Large-text info" v-if="user.firstname == null">Home</span>
+      <span class="Large-text info" v-else>Home</span>
     </router-link>
 
     <router-link :to="{name: 'ProjectPick'}">
       <div class="info" v-if="project.name">
-        <span class="small-text">Projekt:</span>
+        <span class="small-text">Project:</span>
         <span class="large-text">{{ project.name }}</span>
       </div>
     </router-link>
 
     <router-link :to="{name: 'QueryPick'}">
       <div class="info" v-if="query.name">
-        <ico class="small-text">Lekérdezés:</ico>
+        <ico class="small-text">Query:</ico>
         <span class="large-text">{{ query.name }}</span>
       </div>
     </router-link>
@@ -50,17 +50,16 @@ header {
   background-color: white;
   height: 45px;
   display: flex;
-
 }
 
 .info {
+  height: 45px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   margin-right: 15px;
   margin-left: 30px;
-  margin-top: 10px;
 }
 
 .small-text {

@@ -1,20 +1,20 @@
 <template>
   <section class="app-container">
     <h1>Kanban board</h1>
-    <input class="filter-field" type="text" placeholder="filter" v-model="searchKeyWord" name="" id="">
     <div class="kanban">
-      <div v-for="(issues) in issuesByStatus" :key="issues">
-        <h2 v-if="(issues[0])">{{ issues[0].status.name }}</h2>
+      <div v-for="status in columnConfig" :key="status.id">
+        <h2 class="status-name">{{ status.name }}</h2>
         <draggable
-          class="list-group"
-          :list="issues"
-          @change="log"
-          @add="add"
-          itemKey="subject"
-          group="issues"
+                class="list-group"
+                :list="getLimitedList(issuesByStatus[status.name])"
+                @change="log"
+                @add="add"
+                itemKey="id"
+                group="issues"
         >
           <template #item="{ element }">
-            <div class="list-item" v-bind:id="element.id">
+            <div class="list-item">
+              <div class="title">#{{ element.id }}</div>
               <div class="title">{{ element.subject }}</div>
               <div>Szerző: {{ element.author.name }} </div>
               <div v-if="element?.assigned_to?.name">Felelős: {{ element.assigned_to.name }} </div>
@@ -27,134 +27,120 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue'
-import draggable from 'vuedraggable'
-import RedmineService from '@/services/RedmineService.js'
-import { useStore } from "vuex"
-import useDebouncedRef from '@/composables/useDebouncedRef'
+  import { ref, onMounted } from 'vue'
+  import draggable from 'vuedraggable'
+  import RedmineService from '@/services/RedmineService.js'
+  import { useStore } from "vuex"
+  import lodash from "lodash"
 
-export default {
-  name: "Kanban",
-  components: {
-    draggable
-  },
-  setup() {
-    let uniqueStatusNamesWithIds
-    let originalIssues
-    let originalIssuesStringifyed
-    const store = useStore()
-    let issuesByStatus = ref([])
-    const searchKeyWord = useDebouncedRef('', 800)
+  export default {
+    name: "Kanban",
+    components: {
+      draggable
+    },
+    setup() {
+      const issueIdRegex = /\d+/
+      const store = useStore()
+      const columnConfig = ref([])
+      const wipLimit = ref()
+      const fallbackColumnConfig = ["Új", "Folyamatban", "Megoldva"]
+      const fallbackWipLimit = 20
 
-    function log() {
-      //window.console.log(evt)
-    }
+      let issuesForProject = []
+      let issuesByStatus = ref()
 
-    async function getIssuesForProject(){
-      let response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data
-      originalIssues = response.issues
-      originalIssuesStringifyed = JSON.stringify(originalIssues).split('},{')
-
-      const uniqueStatusNames = response.issues.reduce((acc, curr) => {
-        return acc.includes(curr.status.name) ? acc : [...acc, curr.status.name]
-      }, []);
-
-      issuesByStatus.value = uniqueStatusNames.map(name => response.issues.filter(i => i.status.name === name))
-      
-      uniqueStatusNamesWithIds = response.issues.reduce((acc, curr) => {
-        return acc.some(i => i.id === curr.status.id) ? acc : [...acc, curr.status]
-      }, []);
-    }
-
-    async function add(event){
-      const movedTo = event.to.parentNode.firstElementChild.textContent
-      const movedTitle = event.item.innerText.split("Szerző")[0]
-      const newStatus = uniqueStatusNamesWithIds.find(i => i.name === movedTo)
-      const originaIssue = originalIssues.find(i => i.subject === movedTitle)
-      originaIssue.status = newStatus
-      let response = (await RedmineService.updateIssueStatus(store.state.user.api_key, originaIssue.id, newStatus.id)).data
-      console.log(response)
-    }
-
-    onMounted(getIssuesForProject)
-
-    const indexOfAll = (arr, val) => arr.reduce((acc, el, i) => ((el.toLowerCase()).includes(val.toLowerCase()) ? [...acc, i] : acc), [])
-    
-    const searchByKeyWord = (searchKeyWord) => {
-      const foundIndexes = indexOfAll(originalIssuesStringifyed, searchKeyWord)
-      let foundItems = []
-      foundIndexes.forEach(i => foundItems.push(originalIssues[i]))
-      return foundItems
-    }
-
-    watch(searchKeyWord, () => {
-      if (searchKeyWord.value != '') {
-        const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
-        const matches = document.querySelectorAll(".list-item")
-        console.log(matches)
-        console.log(issuesToHighlight)
-        matches.forEach(i => {
-          console.log('i', i.id)
-          // arr1.some( ai => arr2.includes(ai) )
-          if(!(issuesToHighlight.some(j => j.id == i.id))) {
-            i.style.display = 'none'
-          }
-        })
-      } else {
-        const matches = document.querySelectorAll(".list-item")
-        matches.forEach(i => {
-            i.style.display = 'flex'
-        })
+      function log() {
+        //window.console.log(evt)
       }
-    })
 
-    return {
-      log,
-      add,
-      issuesByStatus,
-      searchKeyWord
+      async function setupColumnConfig() {
+        let redmineStatuses
+        let configIssue
+        let columnNames
+        let wipLimitFromConfig
+        try {
+          redmineStatuses = (await RedmineService.getRedmineStatuses(store.state.user.api_key)).data.issue_statuses
+          configIssue = (await RedmineService.getKanbanConfig(store.state.user.api_key, store.state.project.id)).data.issues[0]
+          let config = JSON.parse(configIssue.description).config
+          columnNames = config.columns || fallbackColumnConfig
+          wipLimitFromConfig = config.WIP || fallbackWipLimit
+        } catch (error) {
+          columnNames = fallbackColumnConfig
+          wipLimitFromConfig = fallbackWipLimit
+        }
+        columnConfig.value = redmineStatuses.filter(status => columnNames.includes(status.name))
+        wipLimit.value = wipLimitFromConfig
+      }
+      async function getIssuesForProject() {
+        issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
+        issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
+      }
+
+      async function add(event){
+        const movedTo = event.to.parentNode.firstElementChild.textContent
+        const movedId = parseInt(event.item.innerText.match(issueIdRegex)[0])
+        const newStatus = columnConfig.value.find(i => i.name === movedTo)
+        const originalIssue = issuesForProject.value.find(i => i.id === movedId)
+        originalIssue.status = newStatus
+        issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
+        await RedmineService.updateIssueStatus(store.state.user.api_key, originalIssue.id, newStatus.id)
+      }
+
+      function getLimitedList(issueList){
+        if (issueList && issueList.length > wipLimit.value) {
+          return issueList.slice(0, wipLimit.value)
+        } else {
+          return issueList
+        }
+      }
+
+      onMounted(() => {
+        setupColumnConfig()
+        getIssuesForProject()
+      })
+
+      return {
+        log,
+        add,
+        issuesByStatus,
+        columnConfig,
+        getLimitedList
+      }
     }
   }
-}
 </script>
 
 <style>
-.kanban {
-  display: flex;
-}
+  .kanban {
+    display: flex;
+  }
 
-.list-item {
-  background: rgba(0, 0, 0, 0.04);
-  box-shadow: 3px 3px 7px 0px rgb(0 0 0 / 35%);
-  border-radius: 10px;
-  height: 100%;
-  width: 250px;
-  margin: 10px;
-  padding: 10px;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  cursor: move;
-  display: flex;
-  flex-direction: column;
-}
+  .list-item {
+    background: rgba(0, 0, 0, 0.04);
+    box-shadow: 3px 3px 7px 0px rgb(0 0 0 / 35%);
+    border-radius: 10px;
+    height: 100%;
+    width: 250px;
+    margin: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: move;
+    display: flex;
+    flex-direction: column;
+  }
 
-.list-item > div {
-  padding-bottom: 5px;
-}
+  .list-item > div {
+    padding-bottom: 5px;
+  }
 
-.title {
-  font-size: 17px;
-  font-weight: 600;
-}
+  .title {
+    font-size: 17px;
+    font-weight: 600;
+  }
 
-.display {
-  display: none;
-}
-
-.filter-field {
-  padding: 4px;
-  margin: 0 20px 20px;
-}
-
+  .status-name {
+    margin: 30px;
+  }
 </style>
