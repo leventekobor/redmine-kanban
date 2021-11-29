@@ -1,18 +1,26 @@
 require('dotenv').config()
 const express = require('express')
+const bodyParser = require('body-parser')
 const request = require('request')
 const cors = require('cors')
 const logger = require("./logger")
 
 const port = process.env.PORT || 3000
-var app = express()
+const app = express()
+const jsonParser = bodyParser.json()
 app.use(cors())
 
 logger.info(process.env.BASE_URL)
 
-app.get('/api/redmine_url', function(req, res) {
-    res.send(process.env.BASE_URL)
-    logger.info("base url is served")
+app.post('/api/login', jsonParser, function(req, res) {
+    const baseUrlDomain = process.env.BASE_URL.split('://')[1]
+
+    request(`https://${req.body.username}:${req.body.password}@${baseUrlDomain}users/current.json`, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            info.logger("User successfully logged in")
+            res.send(response.body)
+        }
+    })
 })
 
 app.use('/api', function(req, res) {

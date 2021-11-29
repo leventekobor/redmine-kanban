@@ -83,7 +83,7 @@ export default class RedmineService{
       }
     })
   }
-  static getUserByPassword(username, password, baseUrl) {
-    return Api().get(`https://${username}:${password}@${baseUrl}users/current.json`)
+  static getUserByPassword(user) {
+    return Api().post('login', user)
   }
 }
