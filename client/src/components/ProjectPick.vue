@@ -15,7 +15,7 @@
         placeholder="Type to search"
        />
       </div>
-      <button class="primary">Select</button>
+      <button class="action">Select</button>
     </form>
   </article>
 </template>
