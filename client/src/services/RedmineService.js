@@ -83,4 +83,7 @@ export default class RedmineService{
       }
     })
   }
+  static getUserByPassword(user) {
+    return Api().post('login', user)
+  }
 }
