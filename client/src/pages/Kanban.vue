@@ -1,6 +1,7 @@
 <template>
   <section class="app-container">
     <h1>Kanban board</h1>
+    <input class="filter-field" type="text" placeholder="filter" v-model="searchKeyWord" name="" id="">
     <div class="kanban">
       <div v-for="status in columnConfig" :key="status.id">
         <h2 class="status-name">{{ status.name }}</h2>
@@ -13,7 +14,7 @@
                 group="issues"
         >
           <template #item="{ element }">
-            <div class="list-item">
+            <div class="list-item" v-bind:id="element.id">
               <div class="title">#{{ element.id }}</div>
               <div class="title">{{ element.subject }}</div>
               <div>Szerző: {{ element.author.name }} </div>
@@ -27,11 +28,12 @@
 </template>
 
 <script>
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, watch } from 'vue'
   import draggable from 'vuedraggable'
   import RedmineService from '@/services/RedmineService.js'
   import { useStore } from "vuex"
   import lodash from "lodash"
+  import useDebouncedRef from '@/composables/useDebouncedRef'
 
   export default {
     name: "Kanban",
@@ -45,9 +47,10 @@
       const wipLimit = ref()
       const fallbackColumnConfig = ["Új", "Folyamatban", "Megoldva"]
       const fallbackWipLimit = 20
-
+      const searchKeyWord = useDebouncedRef('', 800)
       let issuesForProject = []
       let issuesByStatus = ref()
+      let originalIssuesStringifyed
 
       function log() {
         //window.console.log(evt)
@@ -73,6 +76,7 @@
       }
       async function getIssuesForProject() {
         issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
+        originalIssuesStringifyed = JSON.stringify(issuesForProject.value).split('},{')
         issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
       }
 
@@ -94,6 +98,36 @@
         }
       }
 
+      const indexOfAll = (arr, val) => arr.reduce((acc, el, i) => ((el.toLowerCase()).includes(val.toLowerCase()) ? [...acc, i] : acc), [])
+    
+      const searchByKeyWord = (searchKeyWord) => {
+        const foundIndexes = indexOfAll(originalIssuesStringifyed, searchKeyWord)
+        let foundItems = []
+        foundIndexes.forEach(i => foundItems.push(issuesForProject.value[i]))
+        return foundItems
+      }
+
+      watch(searchKeyWord, () => {
+        if (searchKeyWord.value != '') {
+          const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
+          const matches = document.querySelectorAll(".list-item")
+          console.log(matches)
+          console.log(issuesToHighlight)
+          matches.forEach(i => {
+            console.log('i', i.id)
+            // arr1.some( ai => arr2.includes(ai) )
+            if(!(issuesToHighlight.some(j => j.id == i.id))) {
+              i.style.display = 'none'
+            }
+          })
+        } else {
+          const matches = document.querySelectorAll(".list-item")
+          matches.forEach(i => {
+              i.style.display = 'flex'
+          })
+        }
+      })
+
       onMounted(() => {
         setupColumnConfig()
         getIssuesForProject()
@@ -104,7 +138,8 @@
         add,
         issuesByStatus,
         columnConfig,
-        getLimitedList
+        getLimitedList,
+        searchKeyWord
       }
     }
   }
@@ -142,5 +177,10 @@
 
   .status-name {
     margin: 30px;
+  }
+
+  .filter-field {
+    padding: 4px;
+    margin: 0 20px 20px;
   }
 </style>

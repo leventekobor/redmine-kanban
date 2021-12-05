@@ -15,7 +15,7 @@
         placeholder="Type to search"
        />
       </div>
-      <button class="primary">Select</button>
+      <button class="action">Select</button>
     </form>
   </article>
 </template>
@@ -58,7 +58,6 @@ export default {
           projects = [...projects, ...currentProjects]
         }
       }
-      console.log(projects)
       projectsOrdered.value = projects.map(({ id, name }) => ({ value:id, name:name }))
     }
 
