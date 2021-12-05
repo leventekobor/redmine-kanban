@@ -64,10 +64,14 @@ export default class RedmineService{
       }
     })
   }
-  static async getRedmineStatuses(apiKey) {
+  static async getRedmineStatuses(apiKey, offset) {
     return Api().get('issue_statuses.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
+      },
+      params: {
+        'limit': 100,
+        'offset': offset
       }
     })
   }

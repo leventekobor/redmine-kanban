@@ -74,8 +74,27 @@
         columnConfig.value = redmineStatuses.filter(status => columnNames.includes(status.name))
         wipLimit.value = wipLimitFromConfig
       }
+
+      async function _getIssuesWithOffset(offset=0) {
+        const response = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id, offset))
+        return {
+          issues: response?.data?.issues || [],
+          total_count: response?.data?.total_count || 0
+        }
+      }
+
       async function getIssuesForProject() {
-        issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
+        const PAGE_SIZE = 100
+        const { issues, firstIssues, total_count } = await _getIssuesWithOffset()
+        issuesForProject.value = [...firstIssues]
+        if(total_count > PAGE_SIZE) {
+          const iterations = Math.ceil(total_count / PAGE_SIZE)
+          for(let i = 1; i < iterations; i++) {
+            const { issues: currentIssues } = await _getIssuesWithOffset(i * PAGE_SIZE)
+            issuesForProject.value = [...issues, ...currentIssues]
+          }
+        }
+        //issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
         originalIssuesStringifyed = JSON.stringify(issuesForProject.value).split('},{')
         issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
       }
