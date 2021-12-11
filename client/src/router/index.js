@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/components/Login'
+import Login from '@/pages/Login'
 import Kanban from '@/pages/Kanban'
 import NotFound from '@/pages/NotFound'
 import ProjectPick from "../components/ProjectPick";

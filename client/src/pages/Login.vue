@@ -32,7 +32,7 @@
 <script>
 import { ref } from 'vue'
 import RedmineService from '@/services/RedmineService.js'
-import store from '@/store/store'
+import store from '@/store'
 import { useRouter } from 'vue-router'
 
 export default {

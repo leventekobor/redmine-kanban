@@ -1,12 +1,9 @@
 <template>
   <header>
-    <router-link :to="{name: 'Login'}">
-      <div class="info" v-if="user.firstname">
-        <span class="small-text">Name:</span>
-        <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
-      </div>
-      <span class="Large-text info" v-else>Home</span>
-    </router-link>
+    <div class="info" v-if="user.firstname">
+      <span class="small-text">Name:</span>
+      <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
+    </div>
 
     <router-link :to="{name: 'ProjectPick'}">
       <div class="info" v-if="project.name">
@@ -22,6 +19,9 @@
       </div>
     </router-link>
 
+    <button class="logout" v-if="user.firstname" @click="logoutUser">
+      Logout
+    </button>
   </header>
 </template>
 
@@ -36,10 +36,16 @@ export default {
     const user = computed(() => store.state.user);
     const project = computed(() => store.state.project);
     const query = computed(() => store.state.query);
+
+    const logOutUser = () => {
+      
+    }
+
     return {
       user,
       project,
-      query
+      query,
+      logOutUser
     }
   }
 }
@@ -70,5 +76,13 @@ header {
 .large-text {
   font-size: 18px;
   font-weight: 700;
+}
+
+.logout {
+  margin-left: auto;
+  cursor: pointer;
+  padding: 6px;
+  background: none;
+  border: none;
 }
 </style>

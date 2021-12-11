@@ -63,7 +63,10 @@
         let wipLimitFromConfig
         try {
           redmineStatuses = (await RedmineService.getRedmineStatuses(store.state.user.api_key)).data.issue_statuses
-          configIssue = (await RedmineService.getKanbanConfig(store.state.user.api_key, store.state.project.id)).data.issues[0]
+          configIssue = await RedmineService.getKanbanConfigTracker(store.state.user.api_key).then(async (res) =>
+            (await RedmineService.getKanbanConfig(store.state.user.api_key, store.state.project.id, res.data.trackers.find(tracker => tracker.name === 'Kanban').id)).data.issues[0]
+          )
+          
           let config = JSON.parse(configIssue.description).config
           columnNames = config.columns || fallbackColumnConfig
           wipLimitFromConfig = config.WIP || fallbackWipLimit
