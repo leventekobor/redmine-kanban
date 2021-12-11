@@ -17,7 +17,7 @@
 
     <router-link :to="{name: 'QueryPick'}">
       <div class="info" v-if="query.name">
-        <ico class="small-text">Query:</ico>
+        <span class="small-text">Query:</span>
         <span class="large-text">{{ query.name }}</span>
       </div>
     </router-link>

@@ -14,7 +14,7 @@
         :options="queiresOrdered"
         placeholder="Type to search"/>
       </div>
-      <button class="primary">Select</button>
+      <button class="action">Select</button>
     </form>
   </article>
 </template>
@@ -50,8 +50,8 @@ export default {
     
     async function getProjectQueries() {
       const PAGE_SIZE = 100;
-      const { queries: firstQueries, total_count } = await _getProjectQueriesWithOffset();
-      queries = [...firstQueries];
+      const { queries: firstQueries, total_count } = await _getProjectQueriesWithOffset()
+      queries = [...firstQueries]
       if(total_count > PAGE_SIZE) {
         const iterations = Math.ceil(total_count / PAGE_SIZE)
         for(let i = 1; i < iterations; i++) {

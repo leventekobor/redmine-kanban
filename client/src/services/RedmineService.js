@@ -33,7 +33,7 @@ export default class RedmineService{
       }
     })
   }
-  static getIssuesForProject(apiKey, queryId, projectId) {
+  static getIssuesForProject(apiKey, queryId, projectId, offset) {
     return Api().get('issues.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
@@ -41,7 +41,8 @@ export default class RedmineService{
       params: {
         'project_id' : projectId,
         'query_id' : queryId,
-        'limit': 100
+        'limit': 100,
+        'offset': offset
       }
     })
   }
@@ -64,10 +65,14 @@ export default class RedmineService{
       }
     })
   }
-  static async getRedmineStatuses(apiKey) {
+  static async getRedmineStatuses(apiKey, offset) {
     return Api().get('issue_statuses.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
+      },
+      params: {
+        'limit': 100,
+        'offset': offset
       }
     })
   }
@@ -82,5 +87,8 @@ export default class RedmineService{
         'X-Redmine-API-Key': apiKey
       }
     })
+  }
+  static getUserByPassword(user) {
+    return Api().post('login', user)
   }
 }

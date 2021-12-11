@@ -15,7 +15,7 @@
         placeholder="Type to search"
        />
       </div>
-      <button class="primary">Select</button>
+      <button class="action">Select</button>
     </form>
   </article>
 </template>
@@ -48,9 +48,9 @@ export default {
     }
     
     async function getProjects() {
-      const PAGE_SIZE = 100;
-      const { projects: firstProjects, total_count } = await _getProjectsWithOffset();
-      projects = [...firstProjects];
+      const PAGE_SIZE = 100
+      const { projects: firstProjects, total_count } = await _getProjectsWithOffset()
+      projects = [...firstProjects]
       if(total_count > PAGE_SIZE) {
         const iterations = Math.ceil(total_count / PAGE_SIZE)
         for(let i = 1; i < iterations; i++) {
@@ -58,7 +58,6 @@ export default {
           projects = [...projects, ...currentProjects]
         }
       }
-      console.log(projects)
       projectsOrdered.value = projects.map(({ id, name }) => ({ value:id, name:name }))
     }
 
