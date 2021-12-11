@@ -33,7 +33,7 @@ export default class RedmineService{
       }
     })
   }
-  static getIssuesForProject(apiKey, queryId, projectId) {
+  static getIssuesForProject(apiKey, queryId, projectId, offset) {
     return Api().get('issues.json', {
       headers: {
         'X-Redmine-API-Key': apiKey
@@ -41,7 +41,8 @@ export default class RedmineService{
       params: {
         'project_id' : projectId,
         'query_id' : queryId,
-        'limit': 100
+        'limit': 100,
+        'offset': offset
       }
     })
   }

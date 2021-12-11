@@ -50,7 +50,7 @@ export default {
     async function getProjects() {
       const PAGE_SIZE = 100
       const { projects: firstProjects, total_count } = await _getProjectsWithOffset()
-      projects = [...firstProjects];
+      projects = [...firstProjects]
       if(total_count > PAGE_SIZE) {
         const iterations = Math.ceil(total_count / PAGE_SIZE)
         for(let i = 1; i < iterations; i++) {

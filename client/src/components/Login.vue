@@ -68,7 +68,6 @@ export default {
           router.push('/project_pick')
         }
       } catch (error) {
-          console.log(error)
           isActive.value = true
           setTimeout(() => isActive.value = false, 2000)
           apiKey.value = ""

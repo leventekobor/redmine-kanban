@@ -85,8 +85,8 @@
 
       async function getIssuesForProject() {
         const PAGE_SIZE = 100
-        const { issues, firstIssues, total_count } = await _getIssuesWithOffset()
-        issuesForProject.value = [...firstIssues]
+        const { issues, total_count } = await _getIssuesWithOffset()
+        issuesForProject.value = [...issues]
         if(total_count > PAGE_SIZE) {
           const iterations = Math.ceil(total_count / PAGE_SIZE)
           for(let i = 1; i < iterations; i++) {
@@ -94,7 +94,6 @@
             issuesForProject.value = [...issues, ...currentIssues]
           }
         }
-        //issuesForProject.value = (await RedmineService.getIssuesForProject(store.state.user.api_key, store.state.query.id, store.state.project.id)).data.issues
         originalIssuesStringifyed = JSON.stringify(issuesForProject.value).split('},{')
         issuesByStatus.value = lodash.groupBy(issuesForProject.value, 'status.name')
       }
@@ -130,11 +129,7 @@
         if (searchKeyWord.value != '') {
           const issuesToHighlight = searchByKeyWord(searchKeyWord.value.toString())
           const matches = document.querySelectorAll(".list-item")
-          console.log(matches)
-          console.log(issuesToHighlight)
           matches.forEach(i => {
-            console.log('i', i.id)
-            // arr1.some( ai => arr2.includes(ai) )
             if(!(issuesToHighlight.some(j => j.id == i.id))) {
               i.style.display = 'none'
             }
