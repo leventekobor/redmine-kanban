@@ -1,10 +1,5 @@
 <template>
   <header>
-    <div class="info" v-if="user.firstname">
-      <span class="small-text">Name:</span>
-      <span class="large-text">{{ user.lastname + " " + user.firstname }}</span>
-    </div>
-
     <router-link :to="{name: 'ProjectPick'}">
       <div class="info" v-if="project.name">
         <span class="small-text">Project:</span>
@@ -19,9 +14,11 @@
       </div>
     </router-link>
 
-    <button class="logout" v-if="user.firstname" @click="logoutUser">
-      Logout
-    </button>
+    <div class ="float-right">
+      <button class="logout" v-if="user.firstname" @click="logoutUser">
+        Logout
+      </button>
+    </div>
   </header>
 </template>
 
@@ -38,7 +35,7 @@ export default {
     const query = computed(() => store.state.query);
 
     const logOutUser = () => {
-      
+
     }
 
     return {
@@ -79,10 +76,14 @@ header {
 }
 
 .logout {
-  margin-left: auto;
   cursor: pointer;
   padding: 6px;
   background: none;
   border: none;
+}
+
+.float-right {
+  display: flex;
+  margin-left: auto;
 }
 </style>
