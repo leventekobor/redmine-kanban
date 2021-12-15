@@ -8,17 +8,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "Login" */ '@/pages/Login')
   },
   {
-    path: '/project_pick',
-    name: 'ProjectPick',
-    component: () => import(/* webpackChunkName: "ProjectPick" */ '@/components/ProjectPick'),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/query_pick',
-    name: 'QueryPick',
-    component: () => import(/* webpackChunkName: "QueriesPick" */ '@/components/QueriesPick'),
+    path: '/setup',
+    name: 'Setup',
+    component: () => import(/* webpackChunkName: "ProjectPick" */ '@/pages/Setup'),
     meta: {
       requiresAuth: true
     }

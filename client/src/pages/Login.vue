@@ -57,7 +57,7 @@ export default {
             type: 'addUser',
             payload: response.data.user
           })
-          router.push('/project_pick')
+          router.push('/setup')
         } else {
           const response = (await RedmineService.getUser(apiKey.value))
           user.value = response.data
@@ -65,7 +65,7 @@ export default {
             type: 'addUser',
             payload: response.data.user
           })
-          router.push('/project_pick')
+          router.push('/setup')
         }
       } catch (error) {
           isActive.value = true

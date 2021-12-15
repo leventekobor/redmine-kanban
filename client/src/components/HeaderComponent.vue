@@ -1,13 +1,13 @@
 <template>
   <header>
-    <router-link :to="{name: 'ProjectPick'}">
+    <router-link :to="{name: 'Setup'}">
       <div class="info" v-if="project.name">
         <span class="small-text">Project:</span>
         <span class="large-text">{{ project.name }}</span>
       </div>
     </router-link>
 
-    <router-link :to="{name: 'QueryPick'}">
+    <router-link :to="{name: 'Setup'}">
       <div class="info" v-if="query.name">
         <span class="small-text">Query:</span>
         <span class="large-text">{{ query.name }}</span>

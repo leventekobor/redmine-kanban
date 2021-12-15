@@ -26,7 +26,6 @@ import Multiselect from '@vueform/multiselect'
 import { useStore } from "vuex"
 import { useRouter } from 'vue-router'
 
-
 export default {
   name: "ProjectPick",
   components: {
